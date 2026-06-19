@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, useEditor, type JSONContent } from "@tiptap/react"
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
@@ -73,7 +73,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import { supabase } from "@/clients/supabase"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -183,6 +183,13 @@ const MobileToolbarContent = ({
   </>
 )
 
+const saveNote = async (content: JSONContent, noteId: string) => {
+  await supabase
+    .from('notes')
+    .update({ content })
+    .eq('id', noteId);
+};
+
 export function SimpleEditor() {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
@@ -190,6 +197,11 @@ export function SimpleEditor() {
     "main"
   )
   const toolbarRef = useRef<HTMLDivElement>(null)
+
+  const [noteId, setNoteId] = useState('b7c9ab3b-78ca-4efe-9e11-293e6399e023');
+  const [content, setContent] = useState();
+
+  const saveTimeout = useRef(null);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -228,8 +240,25 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    content: '',
   })
+
+  useEffect(() => {
+    async function getNote() {
+      const { data: [note] } = await supabase.from('notes').select('*').eq('id', noteId).limit(1);
+
+      if (note) {
+        setContent(note.content)
+        console.log(note.content)
+
+        editor.commands.setContent(note.content)
+      }
+    }
+
+    if (!editor) return; 
+
+    getNote()
+  }, [editor, noteId])
 
   const rect = useCursorVisibility({
     editor,
@@ -242,6 +271,28 @@ export function SimpleEditor() {
     }
   }, [isMobile, mobileView])
 
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleUpdate = () => {
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+
+      saveTimeout.current = setTimeout(() => {
+        saveNote(editor.getJSON(), noteId);
+      }, 1000);
+    }
+
+    editor.on('update', handleUpdate);
+
+    return () => {
+      editor.off("update", handleUpdate)
+
+      if (saveTimeout.current) {
+        clearTimeout(saveTimeout.current)
+      }
+    }
+  }, [editor, noteId])
+
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
@@ -250,8 +301,8 @@ export function SimpleEditor() {
           style={{
             ...(isMobile
               ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
+                bottom: `calc(100% - ${height - rect.y}px)`,
+              }
               : {}),
           }}
         >
