@@ -8,7 +8,7 @@ import {
 } from "@/components/tiptap-ui/blockquote-button"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/tip-tap-hooks/use-tiptap-editor"
 
 // --- Lib ---
 import { parseShortcutKeys } from "@/lib/tiptap-utils"

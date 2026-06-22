@@ -5,8 +5,8 @@ import { type Editor } from "@tiptap/react"
 import { useHotkeys } from "react-hotkeys-hook"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
-import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
+import { useTiptapEditor } from "@/hooks/tip-tap-hooks/use-tiptap-editor"
+import { useIsBreakpoint } from "@/hooks/tip-tap-hooks/use-is-breakpoint"
 
 // --- Lib ---
 import {
