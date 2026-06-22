@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/refs */
 "use client"
 
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, useEditor, type Content } from "@tiptap/react"
 import { useEffect, useRef, useState } from "react"
 
 // --- Tiptap Core Extensions ---
@@ -75,7 +75,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import { supabase } from "@/clients/supabase"
+import { supabase } from "@/services/supabase"
 import { saveNote } from "@/repositories/notes"
 
 const MainToolbarContent = ({
@@ -242,7 +242,7 @@ export function SimpleEditor({ noteId }: Props) {
 
   useEffect(() => {
     async function getNote() {
-      if (!editor) return;
+      if (!editor || !noteId) return;
 
       const { data } = await supabase.from('notes').select('*').eq('id', noteId).limit(1);
 
@@ -251,7 +251,7 @@ export function SimpleEditor({ noteId }: Props) {
       if (note) {
 
         console.log(note.content)
-        editor.commands.setContent(note.content)
+        editor.commands.setContent(note.content as Content)
       }
     }
 

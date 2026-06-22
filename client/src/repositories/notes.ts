@@ -1,4 +1,4 @@
-import { supabase } from "@/clients/supabase";
+import { supabase } from "@/services/supabase";
 import type { JSONContent } from "@tiptap/core";
 
 export const saveNote = async (content: JSONContent, noteId: string) => {

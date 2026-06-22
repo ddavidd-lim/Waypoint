@@ -1,4 +1,4 @@
-import { supabase } from "@/clients/supabase";
+import { supabase } from "@/services/supabase";
 
 export const initAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession();
