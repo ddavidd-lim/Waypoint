@@ -24,7 +24,7 @@ export default function Notes() {
   const { data: noteIds } = useQuery({
     queryKey: ['notes', currentNoteId],
     queryFn: async () => {
-      const { data } = await supabase.from('notes').select('id').order("created_at", { ascending: true});
+      const { data } = await supabase.from('notes').select('id').order("created_at", { ascending: true });
 
       console.log(data)
       if (data) {

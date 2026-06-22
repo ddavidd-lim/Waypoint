@@ -1,10 +1,10 @@
 import { supabase } from "@/services/supabase";
 import type { JSONContent } from "@tiptap/core";
 
-export const saveNote = async (content: JSONContent, noteId: string) => {
+export const saveNote = async (title: string, content: JSONContent, noteId: string) => {
   await supabase
     .from('notes')
-    .update({ content })
+    .update({ content, title })
     .eq('id', noteId);
 };
 

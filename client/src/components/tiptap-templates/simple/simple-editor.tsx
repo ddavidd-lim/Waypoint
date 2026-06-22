@@ -3,7 +3,7 @@
 "use client"
 
 import { EditorContent, EditorContext, useEditor, type Content } from "@tiptap/react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 // --- Tiptap Core Extensions ---
 import { Highlight } from "@tiptap/extension-highlight"
@@ -77,6 +77,8 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import { supabase } from "@/services/supabase"
 import { saveNote } from "@/repositories/notes"
+import TextField from "@mui/material/TextField"
+import Box from "@mui/material/Box"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -198,7 +200,9 @@ export function SimpleEditor({ noteId }: Props) {
   )
   const toolbarRef = useRef<HTMLDivElement>(null)
 
-  const saveTimeout = useRef(null);
+  const saveTimeout = useRef<number | null>(null);
+
+  const [title, setTitle] = useState('');
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -249,8 +253,7 @@ export function SimpleEditor({ noteId }: Props) {
       const note = data?.[0];
 
       if (note) {
-
-        console.log(note.content)
+        setTitle(note.title ?? '')
         editor.commands.setContent(note.content as Content)
       }
     }
@@ -272,28 +275,37 @@ export function SimpleEditor({ noteId }: Props) {
   }, [isMobile, mobileView])
 
 
-  // Debounce note saving to 1 second after user stops typing
-  useEffect(() => {
-    if (!editor) return;
+  const scheduleSave = useCallback(() => {
+    if (!editor || !noteId) return;
 
-    const handleUpdate = () => {
-      if (saveTimeout.current) clearTimeout(saveTimeout.current);
-
-      saveTimeout.current = setTimeout(() => {
-        saveNote(editor.getJSON(), noteId);
-      }, 1000);
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
     }
 
-    editor.on('update', handleUpdate);
+    saveTimeout.current = setTimeout(() => {
+      saveNote(title, editor.getJSON(), noteId);
+    }, 1000);
+  }, [editor, noteId, title,]);
+
+  // Debounce note saving to 1 second after user stops typing
+  useEffect(() => {
+    if (!editor || !noteId) return;
+
+    editor.on('update', scheduleSave);
 
     return () => {
-      editor.off("update", handleUpdate)
+      editor.off("update", scheduleSave)
 
       if (saveTimeout.current) {
         clearTimeout(saveTimeout.current)
       }
     }
-  }, [editor, noteId])
+  }, [editor, noteId, title, scheduleSave])
+
+  useEffect(() => {
+    if (!editor || !noteId) return;
+    scheduleSave();
+  }, [title, editor, noteId, scheduleSave])
 
   return (
     <div className="simple-editor-wrapper">
@@ -322,6 +334,26 @@ export function SimpleEditor({ noteId }: Props) {
           )}
         </Toolbar>
 
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+
+          <TextField
+            variant="standard"
+            placeholder="Untitled"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            sx={{
+              p: 2,
+              pl: 5,
+              width: 1,
+              maxWidth: 750,
+
+              '& .MuiInputBase-input': {
+                fontSize: '2rem',
+                fontWeight: 700,
+              },
+            }}
+          />
+        </Box>
         <EditorContent
           editor={editor}
           role="presentation"
