@@ -14,32 +14,26 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 import Stack from '@mui/material/Stack';
+import dayjs from 'dayjs';
 
 const drawerWidth = 240;
 
 export default function Notes() {
-  const [currentNoteId, setCurrentNoteId] = useState<string>();
+  const [selectedNoteId, setSelectedNoteId] = useState<string>();
 
   const queryClient = useQueryClient();
 
   const { data: noteIds } = useQuery({
-    queryKey: ['notes', currentNoteId],
+    queryKey: ['notes'],
     queryFn: async () => {
-      const { data } = await supabase.from('notes').select('id, title').order("created_at", { ascending: true });
+      const { data } = await supabase.from('notes').select().order("created_at", { ascending: true });
 
       console.log(data)
-      if (data) {
-        console.log(`Found ${data.length} notes`)
-
-        if (!currentNoteId) {
-          setCurrentNoteId(data[0].id)
-        }
-        return data;
-      }
-
-      return [];
+      return data ?? []
     }
   })
+
+  const currentNoteId = selectedNoteId ?? noteIds?.[0]?.id;
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -92,7 +86,7 @@ export default function Notes() {
           flexDirection: 'column',
         }}
       >
-        <Typography variant='subtitle1' sx={{ fontWeight: 600, p: 2}}>
+        <Typography variant='subtitle1' sx={{ fontWeight: 600, p: 2 }}>
           Notes
         </Typography>
         <Box sx={{
@@ -105,14 +99,14 @@ export default function Notes() {
             {noteIds && noteIds.map(note => (
               <ListItemButton
                 selected={note.id === currentNoteId}
-                onClick={() => setCurrentNoteId(note.id)}>
+                onClick={() => setSelectedNoteId(note.id)}>
                 <Stack>
                   <Typography >
                     {note.title === "" ? 'Untitled' : note.title}
 
                   </Typography>
-                  <Typography variant='subtitle2' sx={{fontSize: 10}}>
-                    {note.id}
+                  <Typography variant='subtitle2' sx={{ fontSize: 10 }}>
+                    {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
                   </Typography>
                 </Stack>
               </ListItemButton>
@@ -131,7 +125,7 @@ export default function Notes() {
           overflow: 'hidden',
         }}
       >
-        <SimpleEditor noteId={currentNoteId} />
+        <SimpleEditor noteId={selectedNoteId} />
       </Box>
     </>
   );

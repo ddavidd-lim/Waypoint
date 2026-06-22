@@ -79,7 +79,10 @@ import { supabase } from "@/services/supabase"
 import { saveNote } from "@/repositories/notes"
 import TextField from "@mui/material/TextField"
 import Box from "@mui/material/Box"
-import { useQueryClient } from "@tanstack/react-query"
+import MuiTypography from "@mui/material/Typography"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import dayjs from 'dayjs'
+import type { Note } from "@/types/db"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -248,24 +251,30 @@ export function SimpleEditor({ noteId }: Props) {
     content: '',
   })
 
-  useEffect(() => {
-    async function getNote() {
-      if (!editor || !noteId) return;
+  const { data: note } = useQuery({
+    queryKey: ['note', noteId],
+    queryFn: async () => {
+      if (!noteId) return null;
 
       const { data } = await supabase.from('notes').select('*').eq('id', noteId).limit(1);
 
-      const note = data?.[0];
+      return data?.[0] ?? null
+    },
+    enabled: !!noteId
+  })
 
-      if (note) {
-        setTitle(note.title ?? '')
-        editor.commands.setContent(note.content as Content)
-      }
+  useEffect(() => {
+    async function getNote() {
+      if (!editor || !note) return;
+
+      setTitle(note.title ?? '')
+      editor.commands.setContent(note.content as Content)
     }
 
     if (!editor) return;
 
     getNote()
-  }, [editor, noteId])
+  }, [editor, note])
 
   const rect = useCursorVisibility({
     editor,
@@ -288,11 +297,28 @@ export function SimpleEditor({ noteId }: Props) {
     }
 
     saveTimeout.current = setTimeout(() => {
-      saveNote(title, editor.getJSON(), noteId);
-      queryClient.invalidateQueries({
-        queryKey: ['notes'],
-        refetchType: 'all'
-      })
+      const content = editor.getJSON();
+
+      saveNote(title, content, noteId);
+      // Update single note
+      queryClient.setQueryData(['note', noteId], (old: Note) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          title,
+          content,
+        };
+      });
+
+      // 2. optionally update notes list WITHOUT refetch
+      queryClient.setQueryData(['notes'], (old: Note[] = []) => {
+        return old.map((n) =>
+          n.id === noteId
+            ? { ...n, title, updated_at: new Date().toISOString() }
+            : n
+        );
+      });
     }, 1000);
   }, [editor, noteId, title, queryClient]);
 
@@ -344,7 +370,7 @@ export function SimpleEditor({ noteId }: Props) {
           )}
         </Toolbar>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
 
           <TextField
             variant="standard"
@@ -363,6 +389,15 @@ export function SimpleEditor({ noteId }: Props) {
               },
             }}
           />
+          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
+
+            <MuiTypography variant={'subtitle2'}>
+              Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
+            </MuiTypography>
+            <MuiTypography variant={'subtitle2'}>
+              Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
+            </MuiTypography>
+          </Box>
         </Box>
         <EditorContent
           editor={editor}
