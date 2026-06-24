@@ -75,7 +75,7 @@ export default function Notes() {
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
       />
       <Box sx={{ flex: 1, minWidth: 0, height: '100%', overflow: 'hidden' }}>
-        <SimpleEditor noteId={currentNoteId} />
+        <SimpleEditor key={currentNoteId} noteId={currentNoteId} />
       </Box>
     </>
   );
