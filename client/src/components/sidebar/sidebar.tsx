@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import MenuContent from "./MenuContent";
+import { enqueueSnackbar } from "notistack";
 
 const drawerWidth = 240;
 
@@ -83,6 +84,7 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
       }
       handleMenuClose();
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+      enqueueSnackbar('Note deleted')
     },
   });
 
