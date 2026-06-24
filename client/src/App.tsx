@@ -22,11 +22,12 @@ export default function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <SnackbarProvider autoHideDuration={3000} maxSnack={4} action={(id) => (
+      <SnackbarProvider autoHideDuration={1500} maxSnack={4} action={(id) => (
         <IconButton onClick={() => closeSnackbar(id)}>
           <CloseIcon fontSize="small" />
         </IconButton>
       )}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
       />
       <QueryClientProvider client={queryClient}>
         <Box sx={{ display: 'flex', width: '100%', height: '100dvh', overflow: 'hidden' }}>
