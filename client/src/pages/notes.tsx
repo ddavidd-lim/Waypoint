@@ -12,7 +12,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { useUser } from '@/hooks/useUser';
-import Sidebar from '@/components/sidebar/sidebar';
+import Sidebar from '@/components/sidebar/Sidebar';
 
 export default function Notes() {
   const [selectedNoteId, setSelectedNoteId] = useState<string>();

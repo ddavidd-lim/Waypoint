@@ -1,10 +1,6 @@
-import { useUser } from "@/hooks/useUser";
-import { createNote } from "@/repositories/notes";
 import type { Note } from "@/types/db";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -12,7 +8,6 @@ import ListItemButton, { listItemButtonClasses } from "@mui/material/ListItemBut
 import Stack from "@mui/material/Stack";
 import { alpha } from '@mui/material/styles';
 import Typography from "@mui/material/Typography";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 
@@ -35,21 +30,6 @@ export default function MenuContent({
   menuNoteId,
   onMenuOpen,
 }: Props) {
-  const queryClient = useQueryClient();
-  const { data: user } = useUser();
-  const createMutation = useMutation({
-    mutationFn: async () => {
-      if (!user?.id) throw new Error('No user');
-      const { error } = await createNote('', user.id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-    },
-    onError: (error) => {
-      console.log(`Failed to create note: ${error}`);
-    },
-  });
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
@@ -105,11 +85,6 @@ export default function MenuContent({
             </ListItemButton>
           </ListItem>
         ))}
-        <Box sx={{ my: 2 }}>
-          <Button variant='contained' fullWidth onClick={() => createMutation.mutateAsync()} >
-            +
-          </Button>
-        </Box>
       </List>
 
     </Stack>

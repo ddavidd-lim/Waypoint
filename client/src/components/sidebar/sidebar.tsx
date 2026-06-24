@@ -1,4 +1,4 @@
-import { deleteNote } from "@/repositories/notes";
+import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
 import Avatar from "@mui/material/Avatar";
@@ -12,6 +12,10 @@ import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import MenuContent from "./MenuContent";
+import IconButton from "@mui/material/IconButton";
+import { useUser } from "@/hooks/useUser";
+import AddIcon from '@mui/icons-material/Add';
+import MenuList from "@mui/material/MenuList";
 
 const drawerWidth = 240;
 
@@ -57,7 +61,6 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
 
   const handleMenuClose = () => {
     setMenuAnchor(null);
-    setMenuNoteId(null);
   };
 
   const deleteMutation = useMutation({
@@ -86,6 +89,21 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
     },
   });
 
+  const { data: user } = useUser();
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (!user?.id) throw new Error('No user');
+      const { error } = await createNote('', user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
+    },
+    onError: (error) => {
+      console.log(`Failed to create note: ${error}`);
+    },
+  });
+
   return (
     <Drawer
       variant="permanent"
@@ -104,12 +122,19 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
           alignItems: 'center',
           borderBottom: '1px solid',
           borderColor: 'divider',
+          justifyContent: 'space-between'
         }}
       >
-        <Typography variant="h6">
-          Waypoint
-        </Typography>
+        <Box>
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            Waypoint
+          </Typography>
+        </Box>
+        <IconButton onClick={() => createMutation.mutateAsync()} >
+          <AddIcon />
+        </IconButton>
       </Stack>
+
       <Box
         sx={{
           overflow: 'auto',
@@ -134,9 +159,40 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          },
+        }}
       >
+        <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
+          {menuNoteId}
+        </Typography>
         <MenuItem
           onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
           sx={{ color: 'error.main' }}
@@ -145,6 +201,7 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
         </MenuItem>
       </Menu>
 
+      {/* Profile */}
       <Stack
         direction="row"
         sx={{
