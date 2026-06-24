@@ -1,9 +1,12 @@
+import { useUser } from "@/hooks/useUser";
 import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
+import AddIcon from '@mui/icons-material/Add';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
+import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
@@ -12,10 +15,6 @@ import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import MenuContent from "./MenuContent";
-import IconButton from "@mui/material/IconButton";
-import { useUser } from "@/hooks/useUser";
-import AddIcon from '@mui/icons-material/Add';
-import MenuList from "@mui/material/MenuList";
 
 const drawerWidth = 240;
 
@@ -66,12 +65,10 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
 
-    onMutate: async (id) => {
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['notes'] });
       const previous = queryClient.getQueryData(['notes']);
-      queryClient.setQueryData(['notes'], (old: Note[]) =>
-        old?.filter((n) => n.id !== id)
-      );
+
       return { previous };
     },
 
