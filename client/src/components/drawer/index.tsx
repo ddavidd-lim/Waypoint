@@ -83,7 +83,7 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
       }
       handleMenuClose();
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      enqueueSnackbar('Note deleted')
+      enqueueSnackbar(`Deleted note ${menuNoteId}`)
     },
   });
 

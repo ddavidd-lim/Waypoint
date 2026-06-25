@@ -13,7 +13,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { useUser } from '@/hooks/useUser';
-import Sidebar from '@/components/sidebar/Sidebar';
+import Drawer from '@/components/drawer';
 
 export default function Notes() {
   const [selectedNoteId, setSelectedNoteId] = useState<string>();
@@ -79,7 +79,7 @@ export default function Notes() {
 
   return (
     <>
-      <Sidebar
+      <Drawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
       />
