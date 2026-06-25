@@ -140,13 +140,15 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
             Waypoint
           </Typography>
         </Box>
-        <IconButton onClick={() => createMutation.mutateAsync()} >
-          <AddIcon />
-        </IconButton>
+        <Box>
+          <IconButton onClick={() => createMutation.mutateAsync()} >
+            <AddIcon />
+          </IconButton>
 
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </Box>
       </Stack>
 
       <Box
