@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import Box from '@mui/material/Box';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { createNote } from '@/repositories/notes';
 import { initAuth } from '@/repositories/users';
@@ -16,6 +17,7 @@ import Sidebar from '@/components/sidebar/Sidebar';
 
 export default function Notes() {
   const [selectedNoteId, setSelectedNoteId] = useState<string>();
+  const isCreating = useRef(false);
 
   const queryClient = useQueryClient();
   const { data: user } = useUser();
@@ -68,8 +70,12 @@ export default function Notes() {
     if (!user?.id) return;
     if (!isSuccess) return;
     if (notes.length > 0) return;
+    if (isCreating.current) return;
+
+    isCreating.current = true;
+
     createMutation.mutate();
-  }, [user?.id, isSuccess, notes?.length, createMutation]);
+  }, [user?.id, isSuccess, notes?.length]);
 
   return (
     <>
