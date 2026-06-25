@@ -3,17 +3,46 @@ import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor
 import Box from '@mui/material/Box';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import Drawer from '@/components/drawer';
+import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
 import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useUser } from '@/hooks/useUser';
-import Drawer from '@/components/drawer';
+
+const drawerWidth = 240;
+
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+  open?: boolean;
+}>(({ theme }) => ({
+  flexGrow: 1,
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+      },
+    },
+  ],
+}));
 
 export default function Notes() {
   const [selectedNoteId, setSelectedNoteId] = useState<string>();
@@ -77,15 +106,46 @@ export default function Notes() {
     createMutation.mutate();
   }, [user?.id, isSuccess, notes?.length]);
 
+  const [open, setOpen] = useState(true);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <Drawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
+        open={open}
+        handleDrawerClose={handleDrawerClose}
       />
-      <Box sx={{ flex: 1, minWidth: 0, height: '100%', overflow: 'hidden' }}>
-        <SimpleEditor key={currentNoteId} noteId={currentNoteId} />
-      </Box>
+      <Main open={open}>
+        <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
+
+          <Box sx={{ p: 2, flexShrink: 1, height: 1, display: 'flex', alignItems: 'start', justifyContent: 'start' }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={[
+                {
+                  mr: 2,
+                },
+                open && { display: 'none' },
+              ]}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Box>
+          <SimpleEditor key={currentNoteId} noteId={currentNoteId} />
+        </Stack>
+      </Main>
     </>
   );
 }

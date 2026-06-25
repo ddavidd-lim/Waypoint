@@ -3,6 +3,8 @@ import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
 import AddIcon from '@mui/icons-material/Add';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
@@ -10,12 +12,12 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
-import { enqueueSnackbar } from "notistack";
 
 const drawerWidth = 240;
 
@@ -32,9 +34,14 @@ const Drawer = styled(MuiDrawer)({
 type Props = {
   handleSelectCurrentNoteId: (noteId: string) => void;
   currentNoteId: string;
+  handleDrawerClose: () => void;
+  open: boolean;
+
 }
 
-export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Props) {
+export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
+
+  const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
 
@@ -106,11 +113,14 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
 
   return (
     <Drawer
-      variant="permanent"
+      variant="persistent"
+      open={open}
       sx={{
-        display: { xs: 'none', md: 'block' },
-        [`& .${drawerClasses.paper}`]: {
-          backgroundColor: 'background.paper',
+        width: drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          boxSizing: 'border-box',
         },
       }}
     >
@@ -132,6 +142,10 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
         </Box>
         <IconButton onClick={() => createMutation.mutateAsync()} >
           <AddIcon />
+        </IconButton>
+
+        <IconButton onClick={handleDrawerClose}>
+          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </Stack>
 
