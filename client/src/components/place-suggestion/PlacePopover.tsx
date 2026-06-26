@@ -49,9 +49,9 @@ export function PlacePopover({ anchor, placeId, label, secondaryText, onClose }:
       </Box>
 
       {/* Place info */}
-      <Box sx={{ px: 2, py: 1.5, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-          <PlaceIcon fontSize="small" color="primary" sx={{ mt: 0.25 }} />
+      <Box sx={{ px: 2, py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center'}}>
+          <PlaceIcon fontSize="small" color="primary" />
           <Box>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>{label}</Typography>
             <Typography variant="caption" color="text.secondary">{secondaryText}</Typography>
