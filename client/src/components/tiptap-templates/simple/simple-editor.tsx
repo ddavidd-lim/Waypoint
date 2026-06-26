@@ -75,7 +75,6 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import { placeSuggestion } from "@/components/placeSuggestion"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
@@ -85,6 +84,7 @@ import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Mention from '@tiptap/extension-mention'
 import dayjs from 'dayjs'
+import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 
 const MainToolbarContent = ({
   onHighlighterClick,
