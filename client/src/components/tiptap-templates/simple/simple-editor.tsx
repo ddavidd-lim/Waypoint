@@ -75,14 +75,19 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import { supabase } from "@/services/supabase"
+import { PlaceMention } from "@/components/place-suggestion/placeMention"
+import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import { saveNote } from "@/repositories/notes"
-import TextField from "@mui/material/TextField"
+import { supabase } from "@/services/supabase"
+import type { Note } from "@/types/db"
 import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
-import type { Note } from "@/types/db"
+import type { ActivePlace } from "@/components/place-suggestion/types"
+import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
+
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -215,6 +220,8 @@ export function SimpleEditor({ noteId }: Props) {
 
   const [title, setTitle] = useState('');
 
+  const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
+
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -225,30 +232,32 @@ export function SimpleEditor({ noteId }: Props) {
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor",
       },
+      handleDOMEvents: {
+        mousedown(_view, event) {
+          const target = event.target as HTMLElement
+
+          // Prevent from updating selection when clicking a place chip or its children
+          if (target.closest('.place-chip')) {
+            event.preventDefault()
+            return true
+          }
+          return false
+        },
+      },
+
     },
     extensions: [
+      PlaceMention.configure({
+        HTMLAttributes: { class: 'place-chip' },
+        suggestion: placeSuggestion,
+        onChipClick: (place) => setActivePlace(place),
+
+      }),
       StarterKit.configure({
         horizontalRule: false,
         link: {
           openOnClick: false,
           enableClickSelection: true,
-        },
-      }).extend({
-        addKeyboardShortcuts() {
-          return {
-            ArrowUp: () => {
-              const { state } = this.editor
-              const { from } = state.selection
-
-              // Cursor is at very beginning
-              if (from === 1) {
-                titleRef.current?.focus()
-                return true
-              }
-
-              return false
-            },
-          }
         },
       }),
       HorizontalRule,
@@ -287,6 +296,7 @@ export function SimpleEditor({ noteId }: Props) {
 
   useEffect(() => {
     if (!editor || !note) return;
+    if (loadedNoteId.current === note.id) return
 
     // Don't set content if its the same note
     loadedNoteId.current = note.id;
@@ -321,15 +331,15 @@ export function SimpleEditor({ noteId }: Props) {
 
       saveNote(title, content, noteId);
       // Update single note
-      queryClient.setQueryData(['note', noteId], (old: Note) => {
-        if (!old) return old;
+      // queryClient.setQueryData(['note', noteId], (old: Note) => {
+      //   if (!old) return old;
 
-        return {
-          ...old,
-          title,
-          content,
-        };
-      });
+      //   return {
+      //     ...old,
+      //     title,
+      //     content,
+      //   };
+      // });
 
       // 2. optionally update notes list WITHOUT refetch
       queryClient.setQueryData(['notes'], (old: Note[] = []) => {
@@ -436,6 +446,13 @@ export function SimpleEditor({ noteId }: Props) {
           className="simple-editor-content"
         />
       </EditorContext.Provider>
+      <PlacePopover
+        anchor={activePlace?.anchor ?? null}
+        placeId={activePlace?.placeId ?? ''}
+        label={activePlace?.label ?? ''}
+        secondaryText={activePlace?.secondaryText ?? ''}
+        onClose={() => setActivePlace(null)}
+      />
     </div>
   )
 }
