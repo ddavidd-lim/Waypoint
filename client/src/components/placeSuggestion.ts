@@ -18,7 +18,6 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
       const result = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
         input: query,
       })
-      console.log('results:', result)
 
       if (signal.aborted) return [];
 
