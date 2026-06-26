@@ -8,7 +8,7 @@ import MenuList from '@mui/material/MenuList'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import type { SuggestionProps } from '@tiptap/suggestion'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 export interface PlaceItem {
@@ -26,6 +26,8 @@ const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceI
   ({ items, command, clientRect }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
+    const menuRef = useRef<HTMLDivElement>(null)
+
     const selectItem = (index: number) => {
       const item = items[index]
 
@@ -33,16 +35,6 @@ const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceI
         command(items[selectedIndex])
       }
     }
-
-    const rect = clientRect?.()
-    const style = rect
-      ? {
-        position: 'fixed' as const,
-        top: rect.bottom + 4,
-        left: rect.left,
-        zIndex: 9999,
-      }
-      : { display: 'none' }
 
     const upHandler = () => {
       setSelectedIndex((selectedIndex + items.length - 1) % items.length)
@@ -76,8 +68,40 @@ const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceI
       },
     }))
 
+    const rect = clientRect?.()
+    const style = rect
+      ? {
+        position: 'fixed' as const,
+        top: rect.bottom + 4,
+        left: rect.left,
+        zIndex: 9999,
+      }
+      : { display: 'none' }
+
+    useEffect(() => {
+      const update = () => {
+
+        // Finds the @
+        const rect = clientRect?.()
+        if (!rect || !menuRef.current) return
+
+        menuRef.current.style.top = `${rect.bottom + 4}px`
+        menuRef.current.style.left = `${rect.left}px`
+      }
+
+      const scroller = document.querySelector('.simple-editor-content')
+      scroller?.addEventListener('scroll', update, { passive: true })
+      window.addEventListener('scroll', update, { passive: true })
+
+      return () => {
+        scroller?.removeEventListener('scroll', update)
+        window.removeEventListener('scroll', update)
+      }
+    }, [clientRect])
+
     return createPortal(
       <Paper
+        ref={menuRef}
         style={style}
         elevation={8}
         sx={{
