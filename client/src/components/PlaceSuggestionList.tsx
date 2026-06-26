@@ -15,7 +15,15 @@ export interface SuggestionListRef {
 
 const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceItem>>(
   ({ items, command, clientRect }, ref) => {
-    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const selectItem = (index: number) => {
+      const item = items[index]
+
+      if (item) {
+        command(items[selectedIndex])
+      }
+    }
 
     const rect = clientRect?.()
     const style = rect
@@ -27,26 +35,38 @@ const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceI
       }
       : { display: 'none' }
 
+    const upHandler = () => {
+      setSelectedIndex((selectedIndex + items.length - 1) % items.length)
+    }
+
+    const downHandler = () => {
+      setSelectedIndex((selectedIndex + 1) % items.length)
+    }
+
+    const enterHandler = () => {
+      selectItem(selectedIndex)
+    }
+
+    useEffect(() => setSelectedIndex(0), [items])
+
     useImperativeHandle(ref, () => ({
       onKeyDown({ event }) {
         if (event.key === 'ArrowUp') {
-          setSelectedIndex((i) => (i - 1 + items.length) % items.length)
+          upHandler();
           return true
         }
         if (event.key === 'ArrowDown') {
-          setSelectedIndex((i) => (i + 1) % items.length)
+          downHandler();
           return true
         }
         if (event.key === 'Enter') {
-          if (items[selectedIndex]) command(items[selectedIndex])
+          enterHandler();
           return true
         }
         return false
       },
     }))
-
-    useEffect(() => setSelectedIndex(0), [items])
-
+    
     if (!items.length) return createPortal(
       <div style={{ display: 'none' }} />,
       document.body

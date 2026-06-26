@@ -75,16 +75,16 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import { supabase } from "@/services/supabase"
+import { placeSuggestion } from "@/components/placeSuggestion"
 import { saveNote } from "@/repositories/notes"
-import TextField from "@mui/material/TextField"
+import { supabase } from "@/services/supabase"
+import type { Note } from "@/types/db"
 import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import dayjs from 'dayjs'
-import type { Note } from "@/types/db"
 import Mention from '@tiptap/extension-mention'
-import { placeSuggestion } from "@/components/placeSuggestion"
+import dayjs from 'dayjs'
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -244,23 +244,6 @@ export function SimpleEditor({ noteId }: Props) {
           openOnClick: false,
           enableClickSelection: true,
         },
-      }).extend({
-        addKeyboardShortcuts() {
-          return {
-            ArrowUp: () => {
-              const { state } = this.editor
-              const { from } = state.selection
-
-              // Cursor is at very beginning
-              if (from === 1) {
-                titleRef.current?.focus()
-                return true
-              }
-
-              return false
-            },
-          }
-        },
       }),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -298,6 +281,7 @@ export function SimpleEditor({ noteId }: Props) {
 
   useEffect(() => {
     if (!editor || !note) return;
+    if (loadedNoteId.current === note.id) return
 
     // Don't set content if its the same note
     loadedNoteId.current = note.id;
@@ -332,15 +316,15 @@ export function SimpleEditor({ noteId }: Props) {
 
       saveNote(title, content, noteId);
       // Update single note
-      queryClient.setQueryData(['note', noteId], (old: Note) => {
-        if (!old) return old;
+      // queryClient.setQueryData(['note', noteId], (old: Note) => {
+      //   if (!old) return old;
 
-        return {
-          ...old,
-          title,
-          content,
-        };
-      });
+      //   return {
+      //     ...old,
+      //     title,
+      //     content,
+      //   };
+      // });
 
       // 2. optionally update notes list WITHOUT refetch
       queryClient.setQueryData(['notes'], (old: Note[] = []) => {

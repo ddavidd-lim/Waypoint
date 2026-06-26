@@ -2,12 +2,15 @@ import type { SuggestionOptions } from '@tiptap/suggestion'
 import { ReactRenderer } from '@tiptap/react'
 import PlaceSuggestionList from './PlaceSuggestionList'
 import type { PlaceItem, SuggestionListRef } from './PlaceSuggestionList'
+import { updatePosition } from './updatePosition'
 
 export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   char: '@',
   allowSpaces: true,
+  minQueryLength: 2,
+  debounce: 300,
 
-  items: async ({ query }): Promise<PlaceItem[]> => {
+  items: async ({ query, signal }): Promise<PlaceItem[]> => {
     if (!window.google?.maps?.places?.AutocompleteSuggestion) return []
     if (!query) return [] // return empty array, not early exit before dropdown mounts
 
@@ -16,6 +19,9 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
         input: query,
       })
       console.log('results:', result)
+
+      if (signal.aborted) return [];
+
       return result.suggestions
         .filter((s) => s.placePrediction)
         .slice(0, 5)
@@ -35,23 +41,42 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   },
 
   render: () => {
-    let renderer: ReactRenderer<SuggestionListRef>
+    let component: ReactRenderer<SuggestionListRef>
 
     return {
-      onStart(props) {
-        renderer = new ReactRenderer(PlaceSuggestionList, {
+      onStart: props => {
+        component = new ReactRenderer(PlaceSuggestionList, {
           props,
           editor: props.editor,
         })
+
+        if (!props.clientRect) {
+          return
+        }
+
+        component.element.style.position = 'absolute'
+
+        document.body.appendChild(component.element)
+
+        updatePosition({ editor: props.editor, element: component.element })
       },
+
       onUpdate(props) {
-        renderer.updateProps(props)
+        component.updateProps(props)
+
+        if (!props.clientRect) {
+          return
+        }
+
+        updatePosition({ editor: props.editor, element: component.element })
+
       },
       onKeyDown(props) {
-        return renderer.ref?.onKeyDown(props) ?? false
+        return component.ref?.onKeyDown(props) ?? false
       },
       onExit() {
-        renderer.destroy()
+        component.element.remove()
+        component.destroy()
       },
     }
   },
