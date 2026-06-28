@@ -79,7 +79,7 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
-import { NotesMap } from "@/components/NotesMap"
+import { OverviewMap } from "@/components/OverviewMap"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
@@ -467,7 +467,7 @@ export function SimpleEditor({ noteId }: Props) {
             </MuiTypography>
           </Box>
 
-          <NotesMap placeIds={placeIds} />
+          <OverviewMap placeIds={placeIds} />
         </Box>
 
         <EditorContent
