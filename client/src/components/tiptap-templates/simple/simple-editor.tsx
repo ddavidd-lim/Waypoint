@@ -3,7 +3,7 @@
 "use client"
 
 import { EditorContent, EditorContext, useEditor, type Content } from "@tiptap/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react"
 
 // --- Tiptap Core Extensions ---
 import { Highlight } from "@tiptap/extension-highlight"
@@ -79,10 +79,10 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
-import { OverviewMap } from "@/components/OverviewMap"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
+import type { Place } from "@/types/places"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
@@ -200,9 +200,10 @@ const MobileToolbarContent = ({
 
 type Props = {
   noteId?: string;
+  setPlaces: Dispatch<SetStateAction<Place[]>>
 }
 
-export function SimpleEditor({ noteId }: Props) {
+export function SimpleEditor({ noteId, setPlaces }: Props) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -375,8 +376,7 @@ export function SimpleEditor({ noteId }: Props) {
   }, [title, editor, noteId, scheduleSave])
 
 
-  const [placeIds, setPlaceIds] = useState<{ id: string; label: string }[]>([]);
-
+  // Extract places from editor
   useEffect(() => {
     if (!editor) return
 
@@ -388,7 +388,7 @@ export function SimpleEditor({ noteId }: Props) {
         }
       })
 
-      setPlaceIds((prev) => {
+      setPlaces((prev) => {
         const newKey = ids.map(i => i.id).join(',')
         const prevKey = prev.map(i => i.id).join(',')
         if (newKey === prevKey) return prev;
@@ -402,7 +402,7 @@ export function SimpleEditor({ noteId }: Props) {
     return () => {
       editor.off('update', extractPlaces);
     }
-  }, [editor])
+  }, [editor, setPlaces])
 
   return (
     <div className="simple-editor-wrapper">
@@ -469,8 +469,6 @@ export function SimpleEditor({ noteId }: Props) {
               Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
           </Box>
-
-          <OverviewMap placeIds={placeIds} />
         </Box>
 
         <EditorContent
