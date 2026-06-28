@@ -310,7 +310,10 @@ export function SimpleEditor({ noteId }: Props) {
     loadedNoteId.current = note.id;
 
     setTitle(note.title ?? '')
-    editor.commands.setContent(note.content as Content)
+    requestAnimationFrame(() => {
+      editor.commands.setContent(note.content as Content)
+    })
+
 
   }, [editor, note])
 
