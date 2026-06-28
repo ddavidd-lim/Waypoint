@@ -4,6 +4,9 @@ import { AdvancedMarker, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import { useEffect } from 'react';
 
 // https://developers.google.com/codelabs/maps-platform/maps-platform-101-react-js
+// https://developers.google.com/maps/documentation/javascript/reference/map#Map.fitBounds
+// https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngBounds
+// https://developers.google.com/maps/documentation/javascript/reference/map#Map.panTo
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
@@ -12,8 +15,18 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 
   useEffect(() => {
     if (!map || !pois.length) return
-    map.panTo(pois[0].location)
+
+    if (pois.length === 1) {
+      map.panTo(pois[0].location)
+      map.setZoom(14)
+      return
+    }
+
+    const bounds = new google.maps.LatLngBounds()
+    pois.forEach(poi => bounds.extend(poi.location))
+    map.fitBounds(bounds, 40) // 40px padding
   }, [map, pois])
+
 
   return (
     <>
