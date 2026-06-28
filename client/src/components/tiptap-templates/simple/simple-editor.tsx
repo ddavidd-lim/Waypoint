@@ -78,7 +78,7 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
-import { NotesMap } from "@/components/NotesMap"
+import { OverviewMap } from "@/components/OverviewMap"
 import { SaveIndicator } from "@/components/SaveIndicator"
 import type { SaveState } from "@/components/SaveIndicator/types"
 import { saveNote } from "@/repositories/notes"
@@ -564,7 +564,7 @@ export function SimpleEditor({ noteId }: Props) {
             </Stack>
           </Box>
 
-          <NotesMap placeIds={placeIds} />
+          <OverviewMap placeIds={placeIds} />
         </Box>
 
         <EditorContent

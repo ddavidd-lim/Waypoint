@@ -1,40 +1,76 @@
-import { useEffect, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query';
+import { AdvancedMarker, APIProvider, Map, Pin, useMap } from '@vis.gl/react-google-maps';
+import { useEffect, useRef, useState } from 'react';
 
-// https://developers.google.com/maps/documentation/javascript/load-maps-js-api#dynamic-library-import
+// https://developers.google.com/codelabs/maps-platform/maps-platform-101-react-js
 
-export interface Marker {
-  placeId: string
-  lat: number
-  lng: number
-  label: string
-}
+export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
-export function OverviewMap({ places }: { places: Marker[] }) {
-  const mapRef = useRef<HTMLDivElement>(null)
+const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
+  const map = useMap()
 
   useEffect(() => {
-    if (!mapRef.current || !window.google || !places.length) return
+    if (!map || !pois.length) return
+    map.panTo(pois[0].location)
+  }, [map, pois])
 
-    const map = new google.maps.Map(mapRef.current, {
-      center: { lat: places[0].lat, lng: places[0].lng },
-      zoom: 12,
-      mapId: 'DEMO_MAP_ID',
-      // mapId: import.meta.env.VITE_GOOGLE_MAP_ID,
-    })
+  return (
+    <>
+      {pois.map((poi: Poi) => (
+        <AdvancedMarker
+          key={poi.key}
+          position={poi.location}>
+          {/* Customize with background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'}  */}
+          <Pin />
+        </AdvancedMarker>
+      ))}
+    </>
+  );
+};
 
-    places.forEach((place) => {
-      new google.maps.marker.AdvancedMarkerElement({
-        position: { lat: place.lat, lng: place.lng },
-        map,
-        title: place.label,
-      })
-    })
-  }, [places])
+type Props = {
+  placeIds: { id: string; label: string }[]
+}
+export function OverviewMap({ placeIds }: Props) {
+  const queryKey = placeIds.map(p => p.id).join(',')
 
-  if (!places.length) {
-    console.log('No places found')
-    return null
-  }
+  const { data: pois } = useQuery({
+    queryKey: ['places', queryKey],
+    queryFn: async () => {
+      const results = await Promise.allSettled(
+        placeIds.map(async ({ id }) => {
+          // https://developers.google.com/maps/documentation/javascript/place-details
+          console.log('Searching place details')
+          const place = new google.maps.places.Place({ id });
 
-  return <div ref={mapRef} style={{ width: '100%', height: 300 }} />
+          await place.fetchFields({ fields: ['location'] });
+
+          return {
+            key: id,
+            location: { lat: place.location!.lat(), lng: place.location!.lng() },
+          } as Poi
+        })
+      );
+
+      return results
+        .filter(r => r.status === 'fulfilled')
+        .map(r => (r as PromiseFulfilledResult<Poi>).value);
+    }
+  })
+
+
+  if (!pois || !pois.length) return null
+
+  return (
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
+      <Map
+        style={{ width: '750px', height: '300px' }}
+        mapId='DEMO_MAP_ID'
+        defaultZoom={13}
+        defaultCenter={pois[0]?.location ?? { lat: 34.0522, lng: -118.2437 }}
+      >
+        <PoiMarkers pois={pois}></PoiMarkers>
+      </Map>
+    </APIProvider>
+  )
 }
