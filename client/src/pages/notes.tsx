@@ -157,36 +157,40 @@ export default function Notes() {
       <Main openLeft={openLeftDrawer} openRight={openRightDrawer}>
         <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
 
-          <Box sx={{ p: 2, flexShrink: 1, height: 1, display: 'flex', alignItems: 'start', justifyContent: 'start' }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleLeftDrawerOpen}
-              edge="start"
-              sx={[
-                {
-                  mr: 2,
-                },
-                openLeftDrawer && { display: 'none' },
-              ]}
-            >
-              <ChevronRightIcon />
-            </IconButton>
-          </Box>
+          <IconButton
+            color="inherit"
+            onClick={handleLeftDrawerOpen}
+            sx={{
+              position: 'absolute',
+              left: 8,
+              top: 64,
+              zIndex: 1300,
+              opacity: openLeftDrawer ? 0 : 1,
+              pointerEvents: openLeftDrawer ? 'none' : 'auto',
+              transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
+              transitionDelay: openLeftDrawer ? '0ms' : '225ms',
+            }}
+          >
+            <ChevronRightIcon />
+          </IconButton>
 
-          <Box sx={{ flexGrow: 1, minWidth: 0, overflow: 'auto' }}>
-            <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
-          </Box>
+          <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
 
-          {/* Right toggle */}
-          <Box sx={{ p: 2, flexShrink: 0, height: 1, display: 'flex', alignItems: 'start' }}>
-            <IconButton
-              onClick={handleRightDrawerOpen}
-              sx={[openRightDrawer && { display: 'none' }]}
-            >
-              <ChevronLeftIcon />
-            </IconButton>
-          </Box>
+          <IconButton
+            onClick={handleRightDrawerOpen}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 50,
+              zIndex: 1300,
+              opacity: openRightDrawer ? 0 : 1,
+              pointerEvents: openRightDrawer ? 'none' : 'auto',
+              transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
+              transitionDelay: openRightDrawer ? '0ms' : '225ms',
+            }}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
         </Stack>
       </Main>
 
