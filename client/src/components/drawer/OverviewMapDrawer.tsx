@@ -28,6 +28,12 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
+const TableHeaderCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: 600,
+  backgroundColor: theme.palette.background.default,
+  color: theme.palette.text.primary,
+}));
+
 type Props = {
   handleDrawerClose: () => void;
   open: boolean;
@@ -77,26 +83,29 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
 
       <OverviewMap places={places} />
 
-      <TableContainer component={Paper}>
-        <Table size='small'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>City, State</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pois.map(poi =>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TableContainer sx={{ height: 300, overflow: 'auto' }}>
+          <Table size='small' stickyHeader aria-label="sticky table">
+            <TableHead>
               <TableRow>
-                <TableCell>{poi.name}</TableCell>
-                <TableCell>{poi.address}</TableCell>
-                <TableCell>{poi.city}, {poi.state}</TableCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Address</TableHeaderCell>
+                <TableHeaderCell>City, State</TableHeaderCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {pois.map(poi =>
+                <TableRow>
+                  <TableCell>{poi.name}</TableCell>
+                  <TableCell>{poi.address}</TableCell>
+                  <TableCell>{poi.city}, {poi.state}</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+      </Paper>
     </Drawer>
   );
 }
