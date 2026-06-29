@@ -399,6 +399,34 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   })
 
+  // Extract places from editor
+  useEffect(() => {
+    if (!editor) return
+
+    function extractPlaces() {
+      const ids: { id: string; label: string }[] = []
+      editor!.state.doc.descendants((node) => {
+        if (node.type.name === 'mention' && node.attrs.id) {
+          ids.push({ id: node.attrs.id, label: node.attrs.label })
+        }
+      })
+
+      setPlaces((prev) => {
+        const newKey = ids.map(i => i.id).join(',')
+        const prevKey = prev.map(i => i.id).join(',')
+        if (newKey === prevKey) return prev;
+        return ids;
+      });
+    }
+
+    editor.on('update', extractPlaces);
+    extractPlaces();
+
+    return () => {
+      editor.off('update', extractPlaces);
+    }
+  }, [editor, setPlaces])
+
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
