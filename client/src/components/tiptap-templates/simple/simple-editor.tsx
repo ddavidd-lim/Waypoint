@@ -76,17 +76,19 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import { PlaceMention } from "@/components/place-suggestion/placeMention"
+import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
+import type { ActivePlace } from "@/components/place-suggestion/types"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
 import Box from "@mui/material/Box"
+import CircularProgress from "@mui/material/CircularProgress"
+import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
-import type { ActivePlace } from "@/components/place-suggestion/types"
-import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 
 
 const MainToolbarContent = ({
@@ -214,13 +216,13 @@ export function SimpleEditor({ noteId }: Props) {
 
   const saveTimeout = useRef<number | null>(null);
 
-  const titleRef = useRef<HTMLInputElement>(null)
-
   const loadedNoteId = useRef<string | null>(null);
 
   const [title, setTitle] = useState('');
 
   const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
+
+  const [isSaving, setIsSaving] = useState(false);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -252,6 +254,13 @@ export function SimpleEditor({ noteId }: Props) {
         suggestion: placeSuggestion,
         onChipClick: (place) => setActivePlace(place),
 
+      }).extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            secondaryText: { default: null },
+          }
+        },
       }),
       StarterKit.configure({
         horizontalRule: false,
@@ -294,84 +303,96 @@ export function SimpleEditor({ noteId }: Props) {
     staleTime: 1000 * 60 * 5
   })
 
+  const titleRef = useRef(title);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const noteIdRef = useRef(noteId);
+  const justLoadedRef = useRef(false);
+
+  // Keep refs in sync
+  useEffect(() => { titleRef.current = title; }, [title]);
+  useEffect(() => { noteIdRef.current = noteId; }, [noteId]);
+
+  // Stable save function — never recreated
+  const scheduleSave = useCallback(() => {
+    if (!editor || !noteIdRef.current) return;
+    if (justLoadedRef.current) return;  // skip saves during load
+
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+
+    setIsSaving(true);
+
+    saveTimeout.current = setTimeout(() => {
+      const content = editor.getJSON();
+      const currentTitle = titleRef.current;
+      const currentNoteId = noteIdRef.current;
+      if (!currentNoteId) return;
+
+      saveNote(currentTitle, content, currentNoteId);
+
+      queryClient.setQueryData(['notes'], (old: Note[] = []) =>
+        old.map((n) =>
+          n.id === currentNoteId
+            ? { ...n, title: currentTitle, updated_at: new Date().toISOString() }
+            : n
+        )
+      );
+
+      queryClient.setQueryData(['note', currentNoteId], (old: Note | null | undefined) =>
+        old ? { ...old, title: currentTitle, updated_at: new Date().toISOString() } : old
+      );
+
+      setIsSaving(false);
+    }, 1000);
+  }, [editor, queryClient]);
+  
+  // Register editor listener once
+  useEffect(() => {
+    if (!editor || !noteId) return;
+    editor.on('update', scheduleSave);
+    return () => {
+      editor.off('update', scheduleSave);
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    };
+  }, [editor, noteId, scheduleSave]);
+
+  // Title changes also trigger a save
+  useEffect(() => {
+    if (!editor || !noteId) return;
+    scheduleSave();
+  }, [title]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Flush on note switch
+  useEffect(() => {
+    return () => {
+      if (saveTimeout.current) {
+        clearTimeout(saveTimeout.current);
+        // fire immediately on cleanup
+        if (editor && noteIdRef.current) {
+          saveNote(titleRef.current, editor.getJSON(), noteIdRef.current);
+        }
+      }
+    };
+  }, [noteId, editor]);
+
+  // Load note content into editor when note changes
   useEffect(() => {
     if (!editor || !note) return;
-    if (loadedNoteId.current === note.id) return
+    if (loadedNoteId.current === note.id) return;
+    justLoadedRef.current = true;
 
-    // Don't set content if its the same note
     loadedNoteId.current = note.id;
 
-    setTitle(note.title ?? '')
-    editor.commands.setContent(note.content as Content)
-
-  }, [editor, note])
+    setTitle(note.title ?? '');
+    requestAnimationFrame(() => {
+      editor.commands.setContent(note.content as Content);
+      justLoadedRef.current = false;
+    });
+  }, [editor, note]);
 
   const rect = useCursorVisibility({
     editor,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   })
-
-  useEffect(() => {
-    if (!isMobile && mobileView !== "main") {
-      setMobileView("main")
-    }
-  }, [isMobile, mobileView])
-
-
-  // Callback to save debounced
-  const scheduleSave = useCallback(() => {
-    if (!editor || !noteId) return;
-
-    if (saveTimeout.current) {
-      clearTimeout(saveTimeout.current);
-    }
-
-    saveTimeout.current = setTimeout(() => {
-      const content = editor.getJSON();
-
-      saveNote(title, content, noteId);
-      // Update single note
-      // queryClient.setQueryData(['note', noteId], (old: Note) => {
-      //   if (!old) return old;
-
-      //   return {
-      //     ...old,
-      //     title,
-      //     content,
-      //   };
-      // });
-
-      // 2. optionally update notes list WITHOUT refetch
-      queryClient.setQueryData(['notes'], (old: Note[] = []) => {
-        return old.map((n) =>
-          n.id === noteId
-            ? { ...n, title, updated_at: new Date().toISOString() }
-            : n
-        );
-      });
-    }, 1000);
-  }, [editor, noteId, title, queryClient]);
-
-  // Debounce note saving to 1 second after user stops typing
-  useEffect(() => {
-    if (!editor || !noteId) return;
-
-    editor.on('update', scheduleSave);
-
-    return () => {
-      editor.off("update", scheduleSave)
-
-      if (saveTimeout.current) {
-        clearTimeout(saveTimeout.current)
-      }
-    }
-  }, [editor, noteId, title, scheduleSave])
-
-  // Debounce note saving after user edits title
-  useEffect(() => {
-    if (!editor || !noteId) return;
-    scheduleSave();
-  }, [title, editor, noteId, scheduleSave])
 
   return (
     <div className="simple-editor-wrapper">
@@ -401,12 +422,11 @@ export function SimpleEditor({ noteId }: Props) {
         </Toolbar>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
-
           <TextField
             variant="standard"
             placeholder="Untitled"
             value={title}
-            inputRef={titleRef}
+            inputRef={titleInputRef}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -430,22 +450,28 @@ export function SimpleEditor({ noteId }: Props) {
               },
             }}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
 
+          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
             <MuiTypography variant={'subtitle2'}>
               Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
-            <MuiTypography variant={'subtitle2'}>
-              Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
-            </MuiTypography>
+            <Stack direction={'row'} sx={{ gap: 1, alignItems: 'center' }}>
+              <CircularProgress size={12} sx={{ display: isSaving ? 'block' : 'none' }} />
+              <MuiTypography variant={'subtitle2'}>
+                Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
+              </MuiTypography>
+
+            </Stack>
           </Box>
         </Box>
+
         <EditorContent
           editor={editor}
           role="presentation"
           className="simple-editor-content"
         />
       </EditorContext.Provider>
+
       <PlacePopover
         anchor={activePlace?.anchor ?? null}
         placeId={activePlace?.placeId ?? ''}
