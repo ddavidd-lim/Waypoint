@@ -86,7 +86,7 @@
                   "type": "text"
                 },
                 {
-                  "text": "Overview map",
+                  "text": "Live Overview map",
                   "type": "text",
                   "marks": [
                     {
@@ -135,6 +135,9 @@
       ]
     },
     {
+      "type": "horizontalRule"
+    },
+    {
       "type": "heading",
       "attrs": {
         "level": 3,
@@ -160,69 +163,74 @@
       ]
     },
     {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      },
+      "type": "blockquote",
       "content": [
         {
-          "text": "\"Thinking about checking out",
-          "type": "text",
-          "marks": [
-            {
-              "type": "italic"
-            }
-          ]
-        },
-        {
-          "text": " ",
-          "type": "text"
-        },
-        {
-          "type": "mention",
+          "type": "paragraph",
           "attrs": {
-            "id": "ChIJywjU6WG_woAR3NrWwrEH_3M",
-            "label": "Griffith Observatory",
-            "secondaryText": "East Observatory Road, Los Angeles, CA, USA",
-            "mentionSuggestionChar": "@"
-          }
-        },
-        {
-          "text": " ",
-          "type": "text"
-        },
-        {
-          "text": "this weekend, maybe grab lunch near",
-          "type": "text",
-          "marks": [
+            "textAlign": null
+          },
+          "content": [
             {
-              "type": "italic"
-            }
-          ]
-        },
-        {
-          "text": " ",
-          "type": "text"
-        },
-        {
-          "type": "mention",
-          "attrs": {
-            "id": "ChIJ53JDjkvGwoAR2NMG6_1OnUg",
-            "label": "Grand Central Market",
-            "secondaryText": "South Broadway, Los Angeles, CA, USA",
-            "mentionSuggestionChar": "@"
-          }
-        },
-        {
-          "text": " ",
-          "type": "text"
-        },
-        {
-          "text": "after.\"",
-          "type": "text",
-          "marks": [
+              "text": "\"Thinking about checking out",
+              "type": "text",
+              "marks": [
+                {
+                  "type": "italic"
+                }
+              ]
+            },
             {
-              "type": "italic"
+              "text": " ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJywjU6WG_woAR3NrWwrEH_3M",
+                "label": "Griffith Observatory",
+                "secondaryText": "East Observatory Road, Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " ",
+              "type": "text"
+            },
+            {
+              "text": "this weekend, maybe grab lunch near",
+              "type": "text",
+              "marks": [
+                {
+                  "type": "italic"
+                }
+              ]
+            },
+            {
+              "text": " ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJ53JDjkvGwoAR2NMG6_1OnUg",
+                "label": "Grand Central Market",
+                "secondaryText": "South Broadway, Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " ",
+              "type": "text"
+            },
+            {
+              "text": "after.\"",
+              "type": "text",
+              "marks": [
+                {
+                  "type": "italic"
+                }
+              ]
             }
           ]
         }
@@ -239,6 +247,9 @@
           "type": "text"
         }
       ]
+    },
+    {
+      "type": "horizontalRule"
     },
     {
       "type": "heading",
@@ -328,8 +339,77 @@
       },
       "content": [
         {
-          "text": "✏️ Rich text editor",
+          "text": "Try it yourself",
           "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "blockquote",
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
+          "content": [
+            {
+              "text": "I want to go to ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJZQ9c8IW8woARN0gTXFiTqSU",
+                "label": "UCLA",
+                "secondaryText": "Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " tomorrow to hang out with some friends. Then I'll need to drive to ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJcy95XujbwoARuFY3JsgRQl8",
+                "label": "Hangar 18 Indoor Climbing Gym - Arcadia",
+                "secondaryText": "North Santa Anita Avenue, Arcadia, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " to climb with David. We might grab ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJq5HEVIOMUocR1aaT_hDXIiQ",
+                "label": "In-N-Out Burger",
+                "secondaryText": "North Santa Anita Avenue, Arcadia, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " after that too! Mayhaps get a sweet treat at ",
+              "type": "text"
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "id": "ChIJrw8HXQDbwoARj3T7MS-97h4",
+                "label": "Molly Tea (Arcadia)",
+                "secondaryText": "South Baldwin Avenue, Arcadia, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            },
+            {
+              "text": " as well!",
+              "type": "text"
+            }
+          ]
         }
       ]
     },
@@ -337,302 +417,20 @@
       "type": "paragraph",
       "attrs": {
         "textAlign": null
-      },
-      "content": [
-        {
-          "text": "Type ",
-          "type": "text"
-        },
-        {
-          "text": "**",
-          "type": "text",
-          "marks": [
-            {
-              "type": "code"
-            }
-          ]
-        },
-        {
-          "text": " or hit ",
-          "type": "text"
-        },
-        {
-          "text": "Ctrl+B",
-          "type": "text",
-          "marks": [
-            {
-              "type": "code"
-            }
-          ]
-        },
-        {
-          "text": " — markdown shortcuts and keyboard bindings both work. Type ",
-          "type": "text"
-        },
-        {
-          "text": "/",
-          "type": "text",
-          "marks": [
-            {
-              "type": "code"
-            }
-          ]
-        },
-        {
-          "text": " to insert blocks like code blocks, images, and more.",
-          "type": "text"
-        }
-      ]
+      }
     },
     {
-      "type": "bulletList",
-      "content": [
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Text:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Bold, ",
-                  "type": "text"
-                },
-                {
-                  "text": "Italic",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "italic"
-                    }
-                  ]
-                },
-                {
-                  "text": ", Underline, ",
-                  "type": "text"
-                },
-                {
-                  "text": "Strikethrough",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "strike"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Headings:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Multiple levels via toolbar dropdown",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Lists:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Bullet, ordered, and ✅ checkboxes",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Alignment:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Left, Center, Right, Justified",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Code:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Inline ",
-                  "type": "text"
-                },
-                {
-                  "text": "code",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ]
-                },
-                {
-                  "text": " and fenced code blocks",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Other:",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "text": " Superscript x², Subscript H₂O, auto typographic conversion (",
-                  "type": "text"
-                },
-                {
-                  "text": "->",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ]
-                },
-                {
-                  "text": " → ",
-                  "type": "text"
-                },
-                {
-                  "text": "→",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ]
-                },
-                {
-                  "text": "), image upload, link editor, undo/redo",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "type": "heading",
+      "attrs": {
+        "level": 3,
+        "textAlign": null
+      }
     },
     {
       "type": "paragraph",
       "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "text": "Add images, customize alignment, and apply ",
-          "type": "text"
-        },
-        {
-          "text": "advanced formatting",
-          "type": "text",
-          "marks": [
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-blue)"
-              }
-            }
-          ]
-        },
-        {
-          "text": " to make your writing more engaging and professional.",
-          "type": "text"
-        }
-      ]
+        "textAlign": null
+      }
     }
   ]
 }
