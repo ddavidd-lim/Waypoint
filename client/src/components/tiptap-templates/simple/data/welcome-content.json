@@ -1,0 +1,638 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "Waypoint is a rich text note-taking app that lets you write freely and pin the world to your words. Reference real geographical locations inline with no need for extra tabs or copy pasting addresses.",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2,
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "✨ Features at a glance",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "📍 ",
+                  "type": "text"
+                },
+                {
+                  "text": "Location chips",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " — drop locations inline with ",
+                  "type": "text"
+                },
+                {
+                  "text": "@",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "text": ", powered by Google Places autocomplete",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "🗺️ ",
+                  "type": "text"
+                },
+                {
+                  "text": "Overview map",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " — all chips in a note appear as pins on a live side panel map",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "✏️ ",
+                  "type": "text"
+                },
+                {
+                  "text": "Rich text editor",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " — full formatting toolkit with markdown shortcuts and keyboard support",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3,
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "📍 Location chips",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "As you write, type ‘@’ to search for any location by name or address. Google Places autocomplete handles the rest.",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "\"Thinking about checking out",
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ]
+        },
+        {
+          "text": " ",
+          "type": "text"
+        },
+        {
+          "type": "mention",
+          "attrs": {
+            "id": "ChIJywjU6WG_woAR3NrWwrEH_3M",
+            "label": "Griffith Observatory",
+            "secondaryText": "East Observatory Road, Los Angeles, CA, USA",
+            "mentionSuggestionChar": "@"
+          }
+        },
+        {
+          "text": " ",
+          "type": "text"
+        },
+        {
+          "text": "this weekend, maybe grab lunch near",
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ]
+        },
+        {
+          "text": " ",
+          "type": "text"
+        },
+        {
+          "type": "mention",
+          "attrs": {
+            "id": "ChIJ53JDjkvGwoAR2NMG6_1OnUg",
+            "label": "Grand Central Market",
+            "secondaryText": "South Broadway, Los Angeles, CA, USA",
+            "mentionSuggestionChar": "@"
+          }
+        },
+        {
+          "text": " ",
+          "type": "text"
+        },
+        {
+          "text": "after.\"",
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "Click any chip to open an interactive map popup with a pin and zoom controls.",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3,
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "🗺️ The overview map",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "Every location chip you drop into a note automatically appears in the ",
+          "type": "text"
+        },
+        {
+          "text": "map panel",
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ]
+        },
+        {
+          "text": " on the right. ",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Each location is listed in a table with its address, city, and state",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "The map dynamically pans to fit all pins whenever one is added or removed",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule"
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3,
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "✏️ Rich text editor",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "Type ",
+          "type": "text"
+        },
+        {
+          "text": "**",
+          "type": "text",
+          "marks": [
+            {
+              "type": "code"
+            }
+          ]
+        },
+        {
+          "text": " or hit ",
+          "type": "text"
+        },
+        {
+          "text": "Ctrl+B",
+          "type": "text",
+          "marks": [
+            {
+              "type": "code"
+            }
+          ]
+        },
+        {
+          "text": " — markdown shortcuts and keyboard bindings both work. Type ",
+          "type": "text"
+        },
+        {
+          "text": "/",
+          "type": "text",
+          "marks": [
+            {
+              "type": "code"
+            }
+          ]
+        },
+        {
+          "text": " to insert blocks like code blocks, images, and more.",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Text:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Bold, ",
+                  "type": "text"
+                },
+                {
+                  "text": "Italic",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "italic"
+                    }
+                  ]
+                },
+                {
+                  "text": ", Underline, ",
+                  "type": "text"
+                },
+                {
+                  "text": "Strikethrough",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "strike"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Headings:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Multiple levels via toolbar dropdown",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Lists:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Bullet, ordered, and ✅ checkboxes",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Alignment:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Left, Center, Right, Justified",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Code:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Inline ",
+                  "type": "text"
+                },
+                {
+                  "text": "code",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "text": " and fenced code blocks",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "text": "Other:",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ]
+                },
+                {
+                  "text": " Superscript x², Subscript H₂O, auto typographic conversion (",
+                  "type": "text"
+                },
+                {
+                  "text": "->",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "text": " → ",
+                  "type": "text"
+                },
+                {
+                  "text": "→",
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "text": "), image upload, link editor, undo/redo",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": "left"
+      },
+      "content": [
+        {
+          "text": "Add images, customize alignment, and apply ",
+          "type": "text"
+        },
+        {
+          "text": "advanced formatting",
+          "type": "text",
+          "marks": [
+            {
+              "type": "highlight",
+              "attrs": {
+                "color": "var(--tt-color-highlight-blue)"
+              }
+            }
+          ]
+        },
+        {
+          "text": " to make your writing more engaging and professional.",
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}

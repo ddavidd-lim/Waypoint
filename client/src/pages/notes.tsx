@@ -23,6 +23,8 @@ import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import type { Place } from '@/types/places';
 
+import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
+
 
 
 const Main = styled('main', {
@@ -92,7 +94,7 @@ export default function Notes() {
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error('No user');
-      const { data, error } = await createNote('', user.id);
+      const { data, error } = await createNote('👋 Welcome to Waypoint', user.id, welcomeContent);
       if (error) throw error;
       return data;
 
@@ -133,7 +135,7 @@ export default function Notes() {
   };
 
   // Right Drawer State
-  const [openRightDrawer, setOpenRightDrawer] = useState(true);
+  const [openRightDrawer, setOpenRightDrawer] = useState(false);
 
   const handleRightDrawerOpen = () => {
     setOpenRightDrawer(true);
