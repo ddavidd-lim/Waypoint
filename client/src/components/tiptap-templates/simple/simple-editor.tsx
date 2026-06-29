@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/refs */
 "use client"
 
@@ -79,18 +78,17 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
+import { SaveIndicator } from "@/components/SaveIndicator"
+import type { SaveState } from "@/components/SaveIndicator/types"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
 import Box from "@mui/material/Box"
-import CircularProgress from "@mui/material/CircularProgress"
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
-import type { SaveState } from "@/components/SaveIndicator/types"
-import { SaveIndicator } from "@/components/SaveIndicator"
 
 
 const MainToolbarContent = ({
@@ -213,19 +211,24 @@ export function SimpleEditor({ noteId }: Props) {
   )
 
   const queryClient = useQueryClient();
-
+  
   const toolbarRef = useRef<HTMLDivElement>(null);
-
+  
   const saveTimeout = useRef<number | null>(null);
-
+  
   const loadedNoteId = useRef<string | null>(null);
-
+  
   const [title, setTitle] = useState('');
 
   const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
 
-  // const [isSaving, setIsSaving] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  
+  const titleRef = useRef(title);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const noteIdRef = useRef(noteId);
+  const justLoadedRef = useRef(false);
+
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -306,10 +309,6 @@ export function SimpleEditor({ noteId }: Props) {
     staleTime: 1000 * 60 * 5
   })
 
-  const titleRef = useRef(title);
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  const noteIdRef = useRef(noteId);
-  const justLoadedRef = useRef(false);
 
   // Keep refs in sync
   useEffect(() => { titleRef.current = title; }, [title]);
