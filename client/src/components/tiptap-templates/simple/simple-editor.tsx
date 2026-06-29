@@ -213,19 +213,19 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
   )
 
   const queryClient = useQueryClient();
-  
+
   const toolbarRef = useRef<HTMLDivElement>(null);
-  
+
   const saveTimeout = useRef<number | null>(null);
-  
+
   const loadedNoteId = useRef<string | null>(null);
-  
+
   const [title, setTitle] = useState('');
 
   const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
 
   const [saveState, setSaveState] = useState<SaveState>('idle');
-  
+
   const titleRef = useRef(title);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const noteIdRef = useRef(noteId);
@@ -345,7 +345,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
       );
 
       queryClient.setQueryData(['note', currentNoteId], (old: Note | null | undefined) =>
-        old ? { ...old, title: currentTitle, updated_at: new Date().toISOString() } : old
+        old ? { ...old, title: currentTitle, content, updated_at: new Date().toISOString() } : old
       );
     }, 1000);
   }, [editor, queryClient]);
