@@ -1,6 +1,5 @@
 import { supabase } from "@/services/supabase";
 import type { JSONContent } from "@tiptap/core";
-import content from '../components/tiptap-templates/simple/data/content.json';
 
 export const saveNote = async (title: string, content: JSONContent, noteId: string) => {
   await supabase
@@ -18,7 +17,7 @@ export const fetchNotes = async () => {
 // Fetch single note by id
 
 // Create new note
-export const createNote = async (title: string, userId: string) => {
+export const createNote = async (title: string, userId: string, content?: JSONContent) => {
   const result = await supabase.from('notes').insert({
     title: title,
     user_id: userId,
