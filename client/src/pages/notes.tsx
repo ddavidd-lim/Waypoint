@@ -10,6 +10,7 @@ import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -18,22 +19,29 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useGoogleMaps } from '@/hooks/useGoogleMaps';
+import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
+import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import type { Place } from '@/types/places';
 
-const drawerWidth = 240;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-  open?: boolean;
+
+const Main = styled('main', {
+  shouldForwardProp: (prop) => prop !== 'openLeft' && prop !== 'openRight'
+})<{
+  openLeft?: boolean;
+  openRight?: boolean;
 }>(({ theme }) => ({
   flexGrow: 1,
+  overflow: 'hidden',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerWidth}px`,
+  marginLeft: `-${LEFT_DRAWER_WIDTH}px`,
+  marginRight: `-${RIGHT_DRAWER_WIDTH}px`,
   variants: [
     {
-      props: ({ open }) => open,
+      props: ({ openLeft }) => openLeft,
       style: {
         transition: theme.transitions.create('margin', {
           easing: theme.transitions.easing.easeOut,
@@ -42,15 +50,26 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
         marginLeft: 0,
       },
     },
+    {
+      props: ({ openRight }) => openRight,
+      style: {
+        transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginRight: 0,
+      },
+    },
   ],
 }));
 
 export default function Notes() {
-  const [selectedNoteId, setSelectedNoteId] = useState<string>();
-  const isCreating = useRef(false);
-
   const queryClient = useQueryClient();
   const { data: user } = useUser();
+
+  const isCreating = useRef(false);
+  const [selectedNoteId, setSelectedNoteId] = useState<string>();
+  const [places, setPlaces] = useState<Place[]>([]);
 
   const handleSelectCurrentNoteId = useCallback((noteId: string) => {
     setSelectedNoteId(noteId);
@@ -89,11 +108,6 @@ export default function Notes() {
 
   useEffect(() => {
     initAuth();
-    const hi = async () => {
-      const user = await supabase.auth.getUser();
-      console.log('Current user:', user);
-    };
-    hi();
   }, []);
 
   useEffect(() => {
@@ -107,49 +121,78 @@ export default function Notes() {
     createMutation.mutate();
   }, [user?.id, isSuccess, notes?.length]);
 
-  const [open, setOpen] = useState(true);
+  // Left Drawer state
+  const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleLeftDrawerOpen = () => {
+    setOpenLeftDrawer(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleLeftDrawerClose = () => {
+    setOpenLeftDrawer(false);
   };
 
-  const mapsLoaded = useGoogleMaps(import.meta.env.VITE_GOOGLE_MAPS_API_KEY)
+  // Right Drawer State
+  const [openRightDrawer, setOpenRightDrawer] = useState(true);
+
+  const handleRightDrawerOpen = () => {
+    setOpenRightDrawer(true);
+  };
+
+  const handleRightDrawerClose = () => {
+    setOpenRightDrawer(false);
+  };
 
   return (
     <>
       <Drawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
-        open={open}
-        handleDrawerClose={handleDrawerClose}
+        open={openLeftDrawer}
+        handleDrawerClose={handleLeftDrawerClose}
       />
-      <Main open={open}>
+
+      <Main openLeft={openLeftDrawer} openRight={openRightDrawer}>
         <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
 
           <Box sx={{ p: 2, flexShrink: 1, height: 1, display: 'flex', alignItems: 'start', justifyContent: 'start' }}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={handleLeftDrawerOpen}
               edge="start"
               sx={[
                 {
                   mr: 2,
                 },
-                open && { display: 'none' },
+                openLeftDrawer && { display: 'none' },
               ]}
             >
               <ChevronRightIcon />
             </IconButton>
           </Box>
-          {!mapsLoaded && (<div>Loading...</div>)}
-          {mapsLoaded && (<SimpleEditor key={currentNoteId} noteId={currentNoteId} />)}
+
+          <Box sx={{ flexGrow: 1, minWidth: 0, overflow: 'auto' }}>
+            <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
+          </Box>
+
+          {/* Right toggle */}
+          <Box sx={{ p: 2, flexShrink: 0, height: 1, display: 'flex', alignItems: 'start' }}>
+            <IconButton
+              onClick={handleRightDrawerOpen}
+              sx={[openRightDrawer && { display: 'none' }]}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+          </Box>
         </Stack>
       </Main>
+
+      <OverviewMapDrawer
+        places={places}
+        open={openRightDrawer}
+        handleDrawerClose={handleRightDrawerClose}
+      />
     </>
   );
 }

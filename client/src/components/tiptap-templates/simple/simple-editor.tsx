@@ -2,7 +2,7 @@
 "use client"
 
 import { EditorContent, EditorContext, useEditor, type Content } from "@tiptap/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react"
 
 // --- Tiptap Core Extensions ---
 import { Highlight } from "@tiptap/extension-highlight"
@@ -83,6 +83,7 @@ import type { SaveState } from "@/components/SaveIndicator/types"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
+import type { Place } from "@/types/places"
 import Box from "@mui/material/Box"
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
@@ -201,9 +202,10 @@ const MobileToolbarContent = ({
 
 type Props = {
   noteId?: string;
+  setPlaces: Dispatch<SetStateAction<Place[]>>
 }
 
-export function SimpleEditor({ noteId }: Props) {
+export function SimpleEditor({ noteId, setPlaces }: Props) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -396,6 +398,34 @@ export function SimpleEditor({ noteId }: Props) {
     editor,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   })
+
+  // Extract places from editor
+  useEffect(() => {
+    if (!editor) return
+
+    function extractPlaces() {
+      const ids: { id: string; label: string }[] = []
+      editor!.state.doc.descendants((node) => {
+        if (node.type.name === 'mention' && node.attrs.id) {
+          ids.push({ id: node.attrs.id, label: node.attrs.label })
+        }
+      })
+
+      setPlaces((prev) => {
+        const newKey = ids.map(i => i.id).join(',')
+        const prevKey = prev.map(i => i.id).join(',')
+        if (newKey === prevKey) return prev;
+        return ids;
+      });
+    }
+
+    editor.on('update', extractPlaces);
+    extractPlaces();
+
+    return () => {
+      editor.off('update', extractPlaces);
+    }
+  }, [editor, setPlaces])
 
   return (
     <div className="simple-editor-wrapper">
