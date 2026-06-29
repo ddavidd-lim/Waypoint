@@ -89,6 +89,8 @@ import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
+import type { SaveState } from "@/components/SaveIndicator/types"
+import { SaveIndicator } from "@/components/SaveIndicator"
 
 
 const MainToolbarContent = ({
@@ -222,7 +224,8 @@ export function SimpleEditor({ noteId }: Props) {
 
   const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
 
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>('idle');
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -319,15 +322,18 @@ export function SimpleEditor({ noteId }: Props) {
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
 
-    setIsSaving(true);
+    setSaveState('saving');
 
     saveTimeout.current = setTimeout(() => {
+
       const content = editor.getJSON();
       const currentTitle = titleRef.current;
       const currentNoteId = noteIdRef.current;
       if (!currentNoteId) return;
 
       saveNote(currentTitle, content, currentNoteId);
+
+      setSaveState('saved');
 
       queryClient.setQueryData(['notes'], (old: Note[] = []) =>
         old.map((n) =>
@@ -340,11 +346,9 @@ export function SimpleEditor({ noteId }: Props) {
       queryClient.setQueryData(['note', currentNoteId], (old: Note | null | undefined) =>
         old ? { ...old, title: currentTitle, updated_at: new Date().toISOString() } : old
       );
-
-      setIsSaving(false);
     }, 1000);
   }, [editor, queryClient]);
-  
+
   // Register editor listener once
   useEffect(() => {
     if (!editor || !noteId) return;
@@ -456,7 +460,7 @@ export function SimpleEditor({ noteId }: Props) {
               Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
             <Stack direction={'row'} sx={{ gap: 1, alignItems: 'center' }}>
-              <CircularProgress size={12} sx={{ display: isSaving ? 'block' : 'none' }} />
+              <SaveIndicator state={saveState} />
               <MuiTypography variant={'subtitle2'}>
                 Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
               </MuiTypography>
