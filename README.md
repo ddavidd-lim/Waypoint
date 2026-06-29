@@ -7,9 +7,10 @@ A rich text note-taking app that lets you tag locations inline and visualize the
 ## ✨ Features
 
 - 📝 **Rich text editing** via TipTap — headings, tasks, code blocks, and more
-- 📍 **Location tagging** — attach a place to any note and revisit ideas in context
+- 📍 **Location tagging** — attach a place to any note and view a map of the location
+-  🗺️**Live overview map** — all places in a note appear as pins on a live side panel map
 - ⚡ **Optimistic updates** — instant UI feedback with TanStack Query mutation caching
-- 💾 **Auto-save** — debounced saves so your work is never lost
+- 💾 **Auto-save** — debounced saves
 - 🔐 **Auth & row-level security** — per-user data isolation enforced at the database layer via Supabase RLS
 
 ---
@@ -20,6 +21,7 @@ A rich text note-taking app that lets you tag locations inline and visualize the
 | --- | --- |
 | Frontend | React, TypeScript, Vite, MUI v6 |
 | Editor | TipTap (SimpleEditor) |
+| Maps | Google Maps JavaScript API / Places API |
 | Data fetching | TanStack Query |
 | Backend / Auth | Supabase (PostgreSQL + RLS) |
 
@@ -63,11 +65,8 @@ cd waypoint/client
 npm install
 
 # 3. Configure environment
-cp .env.example .env
-# Fill in your Supabase URL, anon key, and OpenAI key
+# Ensure environment variables for supabase and Google Maps API are in .env
 
 # 4. Run locally
 npm run dev
 ```
-
-**Prerequisites:** Node 18+, a Supabase project with pgvector enabled
