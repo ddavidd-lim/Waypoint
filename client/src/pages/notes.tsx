@@ -135,7 +135,7 @@ export default function Notes() {
   };
 
   // Right Drawer State
-  const [openRightDrawer, setOpenRightDrawer] = useState(true);
+  const [openRightDrawer, setOpenRightDrawer] = useState(false);
 
   const handleRightDrawerOpen = () => {
     setOpenRightDrawer(true);
