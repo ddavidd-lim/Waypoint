@@ -32,7 +32,7 @@ I would call myself an avid notetaker and I'm usually the one delegated to plann
 Some of the biggest pain points have been in bridging notes and maps.
 Every destination I consider requires a separate Google Maps tab to look up where I would need to either embed or paste a link, which are both slow.
 
-I wanted to create a way I could visualize everything at once while being conservative with space, so I came up with a rich text editor that allows autocomplete using the Google Maps API as well as a popup map on hover. Each note includes an optional bigger map to view all locations relative to each other.
+I wanted to create a way I could visualize everything at once while being conservative with space, so I came up with a rich text editor that allows autocomplete using the Google Maps API as well as a popup map on hover. The side panel contains an overview map to view all locations relative to each other as well as a table containing details on each location referenced in the note.
 
 It was cool building this up since it fills the gaps I’ve faced in other note apps and resulted in having something cool to share with my friends when I’m in my planning phases.
 
