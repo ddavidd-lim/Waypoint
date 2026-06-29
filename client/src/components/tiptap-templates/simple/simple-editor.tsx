@@ -460,7 +460,7 @@ export function SimpleEditor({ noteId }: Props) {
               Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
             <Stack direction={'row'} sx={{ gap: 1, alignItems: 'center' }}>
-              <SaveIndicator state={saveState} />
+              <SaveIndicator state={saveState} updatedAt={dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')} />
               <MuiTypography variant={'subtitle2'}>
                 Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
               </MuiTypography>
