@@ -20,6 +20,7 @@ import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
 import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Logo from '/waypoint_logo_3d.png';
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -137,11 +138,19 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
           justifyContent: 'space-between'
         }}
       >
-        <Box>
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            Waypoint
-          </Typography>
-        </Box>
+        <Box
+          component="img"
+          sx={{
+            height: '25px',
+            width: '25px',
+            maxHeight: { xs: 233, md: 167 },
+            maxWidth: { xs: 350, md: 250 },
+            borderRadius: 2,
+            boxShadow: 3,
+          }}
+          alt="Waypoint Logo"
+          src={Logo} // 2. Pass imported reference to src
+        />
         <Box>
           <IconButton onClick={() => createMutation.mutateAsync()} >
             <AddIcon />
