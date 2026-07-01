@@ -1,12 +1,14 @@
+import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 import { useUser } from "@/hooks/useUser";
 import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
-import AddIcon from '@mui/icons-material/Add';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AddIcon from '@mui/icons-material/AddOutlined';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -14,12 +16,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
-import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import Logo from '/waypoint_logo_3d.png';
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -39,7 +41,7 @@ type Props = {
 
 }
 
-export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
+export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
 
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -137,20 +139,34 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
           justifyContent: 'space-between'
         }}
       >
-        <Box>
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            Waypoint
-          </Typography>
-        </Box>
-        <Box>
-          <IconButton onClick={() => createMutation.mutateAsync()} >
-            <AddIcon />
-          </IconButton>
+        <Box
+          component="img"
+          sx={{
+            height: '25px',
+            width: '25px',
+            maxHeight: { xs: 233, md: 167 },
+            maxWidth: { xs: 350, md: 250 },
+          }}
+          alt="Waypoint Logo"
+          src={Logo} // 2. Pass imported reference to src
+        />
+        <Stack direction={'row'} spacing={2}>
+          <Button
+            fullWidth
+            variant="text"
+            endIcon={<AddIcon />}
+            onClick={() => createMutation.mutateAsync()}
+            sx={{
+              justifyContent: 'flex-start',
+            }}
+          >
+            New note
+          </Button>
 
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
           </IconButton>
-        </Box>
+        </Stack>
       </Stack>
 
       <Box
@@ -205,9 +221,9 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
           },
         }}
       >
-        <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
+        {/* <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
           {menuNoteId}
-        </Typography>
+        </Typography> */}
         <MenuItem
           onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
           sx={{ color: 'error.main' }}
@@ -234,13 +250,12 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
             Anonymous Cockatoo
           </Typography>
-          <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}>
-            {/* anon@email.com */}
-            {user?.id}
-          </Typography>
+          {/* <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}> */}
+            {/* {user?.id} */}
+          {/* </Typography> */}
         </Box>
       </Stack>
     </Drawer>

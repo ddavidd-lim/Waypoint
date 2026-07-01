@@ -1,6 +1,6 @@
 import type { Note } from "@/types/db";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
+import TextSnippetOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -38,6 +38,7 @@ export default memo(
                 sx={(theme) => ({
                   borderRadius: 2,
                   px: 1,
+                  color: 'text.secondary',
                   py: 0.75,
                   height: 40,
                   '& .hover-actions': {
@@ -71,7 +72,12 @@ export default memo(
                   size="small"
                   onClick={(e) => onMenuOpen(e, note.id)}
                   className="hover-actions"
-                  sx={{ ml: 1 }}
+                  sx={{
+                    backgroundColor: 'transparent',
+                    '&:hover': { backgroundColor: 'action.hover' },
+                    ml: 1,
+                  }}
+
                 >
                   <MoreHorizIcon fontSize="small" />
                 </IconButton>

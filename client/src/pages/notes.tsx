@@ -2,7 +2,7 @@
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import Drawer from '@/components/drawer';
+import NotesDrawer from '@/components/drawer';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useUser } from '@/hooks/useUser';
@@ -11,8 +11,8 @@ import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
 import type { Place } from '@/types/places';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { styled, useTheme } from '@mui/material/styles';
@@ -154,7 +154,7 @@ export default function Notes() {
 
   return (
     <>
-      <Drawer
+      <NotesDrawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
         open={openLeftDrawer}
@@ -178,7 +178,7 @@ export default function Notes() {
               transitionDelay: openLeftDrawer ? '0ms' : '225ms',
             }}
           >
-            <ChevronRightIcon />
+            <KeyboardDoubleArrowRightIcon />
           </IconButton>
 
           <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
@@ -196,7 +196,7 @@ export default function Notes() {
               transitionDelay: openRightDrawer ? '0ms' : '225ms',
             }}
           >
-            <ChevronLeftIcon />
+            <KeyboardDoubleArrowLeftIcon />
           </IconButton>
         </Stack>
       </Main>

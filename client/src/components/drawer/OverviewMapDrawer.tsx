@@ -1,8 +1,8 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { usePlacePois } from '@/hooks/usePlacePois';
 import type { Place } from '@/types/places';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Box from "@mui/material/Box";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
@@ -74,7 +74,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       >
         <Box>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
           </IconButton>
         </Box>
         <Box>
