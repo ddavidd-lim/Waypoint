@@ -250,13 +250,12 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
             Anonymous Cockatoo
           </Typography>
-          <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}>
-            {/* anon@email.com */}
-            {user?.id}
-          </Typography>
+          {/* <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}> */}
+            {/* {user?.id} */}
+          {/* </Typography> */}
         </Box>
       </Stack>
     </Drawer>
