@@ -1,12 +1,14 @@
+import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 import { useUser } from "@/hooks/useUser";
 import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
-import AddIcon from '@mui/icons-material/Add';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AddIcon from '@mui/icons-material/AddOutlined';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -14,12 +16,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
-import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Logo from '/waypoint_logo_3d.png';
 
 const Drawer = styled(MuiDrawer)({
@@ -145,21 +146,27 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             width: '25px',
             maxHeight: { xs: 233, md: 167 },
             maxWidth: { xs: 350, md: 250 },
-            borderRadius: 2,
-            boxShadow: 3,
           }}
           alt="Waypoint Logo"
           src={Logo} // 2. Pass imported reference to src
         />
-        <Box>
-          <IconButton onClick={() => createMutation.mutateAsync()} >
-            <AddIcon />
-          </IconButton>
+        <Stack direction={'row'} spacing={2}>
+          <Button
+            fullWidth
+            variant="text"
+            endIcon={<AddIcon />}
+            onClick={() => createMutation.mutateAsync()}
+            sx={{
+              justifyContent: 'flex-start',
+            }}
+          >
+            New note
+          </Button>
 
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
           </IconButton>
-        </Box>
+        </Stack>
       </Stack>
 
       <Box
