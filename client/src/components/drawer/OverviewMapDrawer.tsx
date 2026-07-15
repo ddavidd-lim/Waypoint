@@ -87,7 +87,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       <OverviewMap places={places} />
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ height: 300, overflow: 'auto' }}>
+        <TableContainer sx={{ height: 1, overflow: 'auto' }}>
           <Table size='small' stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
