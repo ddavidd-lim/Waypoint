@@ -1,4 +1,3 @@
-// src/utils/showSignInSnackbar.tsx
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -15,7 +14,7 @@ export function showSignInSnackbar(): SnackbarKey {
           color="inherit"
           size="small"
           onClick={() => {
-            router.navigate('/login')
+            router.navigate('/signup')
             closeSnackbar(id);
           }}
         >
