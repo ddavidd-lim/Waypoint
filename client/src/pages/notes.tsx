@@ -7,7 +7,6 @@ import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
-import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
 import type { Place } from '@/types/places';
@@ -22,8 +21,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
 
 
 
@@ -114,10 +113,6 @@ export default function Notes() {
       console.log(`Failed to create note: ${error}`);
     },
   });
-
-  useEffect(() => {
-    initAuth();
-  }, []);
 
   useEffect(() => {
     if (!user?.id) return;
