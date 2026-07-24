@@ -22,8 +22,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     init()
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!session) {
+        const { data, error } = await supabase.auth.signInAnonymously()
+        if (!error) setSession(data.session)
+      } else {
+        setSession(session)
+      }
     })
 
     return () => listener.subscription.unsubscribe()
