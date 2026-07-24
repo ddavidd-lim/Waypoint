@@ -301,9 +301,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           },
         }}
       >
-        {/* <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
-          {menuNoteId}
-        </Typography> */}
         <MenuItem
           onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
           sx={{ color: 'error.main' }}
@@ -326,7 +323,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           borderColor: 'divider',
         }}
       >
-        <Tooltip title="Account settings">
+        <Tooltip title={user?.is_anonymous ? "Sign in" : "Account settings"}>
           <IconButton
             onClick={handleProfileMenuOpen}
             size="small"
