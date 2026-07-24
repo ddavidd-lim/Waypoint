@@ -30,6 +30,7 @@ import { useNavigate } from "react-router-dom";
 import MenuContent from "./MenuContent";
 import Logo from '/waypoint_logo_3d.png';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LoginIcon from '@mui/icons-material/Login';
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -41,12 +42,58 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
+type LoggedInProfileItemsProps = {
+  handleProfileMenuClose: () => void;
+  handleLogout: () => void;
+};
+
+function LoggedInProfileItems({ handleProfileMenuClose, handleLogout }: LoggedInProfileItemsProps) {
+  return (
+    <>
+      <MenuItem onClick={handleProfileMenuClose}>
+        <ListItemIcon>
+          <AccountBoxIcon />
+        </ListItemIcon>
+        Profile
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleProfileMenuClose}>
+        <ListItemIcon>
+          <Settings fontSize="small" />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+        <ListItemIcon>
+          <Logout fontSize="small" color="error"/>
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </>
+  );
+}
+
+type LoggedOutProfileItemsProps = {
+  handleSignIn: () => void;
+};
+
+function LoggedOutProfileItems({ handleSignIn }: LoggedOutProfileItemsProps) {
+  return (
+    <MenuItem onClick={handleSignIn} sx={{ color: 'primary.main' }}>
+      <ListItemIcon>
+        <LoginIcon fontSize="small" color="primary"/>
+      </ListItemIcon>
+      Sign up
+    </MenuItem>
+  );
+}
+
+
 type Props = {
   handleSelectCurrentNoteId: (noteId: string) => void;
   currentNoteId: string;
   handleDrawerClose: () => void;
   open: boolean;
-
 }
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
@@ -62,7 +109,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const queryClient = useQueryClient();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
 
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: ['notes'],
@@ -86,10 +132,8 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const handleProfileMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
 
-    if (user?.is_anonymous) return;
-
     setProfileMenuAnchor(e.currentTarget);
-  }, [user])
+  }, [])
 
   const handleNoteMenuClose = () => {
     setNoteMenuAnchor(null);
@@ -107,7 +151,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     await queryClient.invalidateQueries({ queryKey: ['current-user'] });
     navigate('/');
   }
-
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
@@ -285,7 +328,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       >
         <Tooltip title="Account settings">
           <IconButton
-            disabled={user?.is_anonymous ? true : false}
             onClick={handleProfileMenuOpen}
             size="small"
             aria-controls={open ? 'account-menu' : undefined}
@@ -350,28 +392,11 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             },
           },
         }}>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <AccountBoxIcon />
-          </ListItemIcon>
-          Profile
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ color: 'error.main' }}
-        >
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        {user?.is_anonymous ? (
+          <LoggedOutProfileItems handleSignIn={() => navigate('/signup')} />
+        ) : (
+          <LoggedInProfileItems handleLogout={handleLogout} handleProfileMenuClose={handleProfileMenuClose} />
+        )}
       </Menu>
     </Drawer >
   );
