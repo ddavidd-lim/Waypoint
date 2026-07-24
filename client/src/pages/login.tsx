@@ -20,6 +20,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 const loginSchema = z.object(
@@ -36,6 +37,8 @@ export default function Login() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const handlePasswordVisible = () => {
     setPasswordVisible(prev => !prev);
@@ -61,6 +64,7 @@ export default function Login() {
       }
       setSubmitError(null);
 
+      await queryClient.invalidateQueries({ queryKey: ['notes'] });
       navigate('/');
     },
     (errors) => {
