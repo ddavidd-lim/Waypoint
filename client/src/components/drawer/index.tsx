@@ -260,7 +260,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           alignItems: 'center',
           borderTop: '1px solid',
           borderColor: 'divider',
-          background: 'red'
         }}
         onClick={handleProfileMenuOpen}
       >
@@ -312,9 +311,10 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           },
         }}>
         <MenuItem
-          onClick={() => {
-            supabase.auth.signOut();
+          onClick={async () => {
+            await supabase.auth.signOut();
             handleProfileMenuClose();
+            await queryClient.invalidateQueries({ queryKey: ['current-user'] });
           }}
           sx={{ color: 'error.main' }}
         >

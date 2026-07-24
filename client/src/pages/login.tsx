@@ -65,6 +65,7 @@ export default function Login() {
       setSubmitError(null);
 
       await queryClient.invalidateQueries({ queryKey: ['notes'] });
+      await queryClient.invalidateQueries({ queryKey: ['current-user'] });
       navigate('/');
     },
     (errors) => {
