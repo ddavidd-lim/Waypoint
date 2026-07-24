@@ -38,7 +38,7 @@ export default function App() {
               <CloseIcon fontSize="small" />
             </IconButton>
           )}
-            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           />
           <QueryClientProvider client={queryClient}>
             <Box sx={{ display: 'flex', width: '100%', height: '100dvh', overflow: 'hidden' }}>

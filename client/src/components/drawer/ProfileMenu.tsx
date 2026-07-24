@@ -62,7 +62,7 @@ type Props = {
   handleLogout: () => void;
 }
 
-export default function ProfileMenu({ anchorEl, handleProfileMenuClose, handleLogout }: Props) {
+export default function ProfleMenu({ anchorEl, handleProfileMenuClose, handleLogout }: Props) {
   const navigate = useNavigate();
   const { data: user } = useUser();
 
@@ -72,7 +72,7 @@ export default function ProfileMenu({ anchorEl, handleProfileMenuClose, handleLo
       open={Boolean(anchorEl)}
       onClose={handleProfileMenuClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       autoFocus={false}
       slotProps={{
         list: {
