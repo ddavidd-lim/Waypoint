@@ -51,7 +51,7 @@ export default function Notes() {
   const { user: authUser } = useContext(AuthContext)
 
   const { data: notes, isSuccess } = useQuery<Note[]>({
-    queryKey: ['notes'],
+    queryKey: ['notes', user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from('notes')
@@ -59,6 +59,7 @@ export default function Notes() {
         .order("created_at", { ascending: true });
       return data ?? [];
     },
+    enabled: !!user?.id,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -111,6 +112,11 @@ export default function Notes() {
       closeSnackbar(key);
     };
   }, [authUser]);
+
+  // Reset creation of first note if the user changes: sign-in + login + logout
+  useEffect(() => {
+    isCreating.current = false;
+  }, [user?.id]);
 
   // Left Drawer state
   const [openLeftDrawer, setOpenLeftDrawer] = useState(isMobile ? false : true);

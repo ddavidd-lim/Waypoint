@@ -22,6 +22,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
 import Logo from '/waypoint_logo_3d.png';
+import { useNavigate } from "react-router-dom";
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -43,6 +44,7 @@ type Props = {
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [noteMenuAnchor, setNoteMenuAnchor] = useState<null | HTMLElement>(null);
   const [profileMenuAnchor, setProfileMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -89,6 +91,15 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const handleProfileMenuClose = () => {
     setProfileMenuAnchor(null);
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    handleProfileMenuClose();
+    await queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
+    await queryClient.invalidateQueries({ queryKey: ['note'] });
+    await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    navigate('/');
+  }
 
 
   const deleteMutation = useMutation({
@@ -311,16 +322,12 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           },
         }}>
         <MenuItem
-          onClick={async () => {
-            await supabase.auth.signOut();
-            handleProfileMenuClose();
-            await queryClient.invalidateQueries({ queryKey: ['current-user'] });
-          }}
+          onClick={handleLogout}
           sx={{ color: 'error.main' }}
         >
           Logout
         </MenuItem>
       </Menu>
-    </Drawer>
+    </Drawer >
   );
 }
