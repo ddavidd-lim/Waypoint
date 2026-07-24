@@ -1,36 +1,29 @@
 import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 import { useUser } from "@/hooks/useUser";
-import { createNote, deleteNote } from "@/repositories/notes";
+import { createNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
 import AddIcon from '@mui/icons-material/AddOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import Logout from '@mui/icons-material/Logout';
-import Settings from '@mui/icons-material/Settings';
+
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from '@mui/material/Divider';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
 import Tooltip from '@mui/material/Tooltip';
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuContent from "./MenuContent";
+import NoteEllipsisMenu from "./NoteEllipsisMenu";
+import ProfileMenu from "./ProfileMenu";
 import Logo from '/waypoint_logo_3d.png';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import LoginIcon from '@mui/icons-material/Login';
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -41,52 +34,6 @@ const Drawer = styled(MuiDrawer)({
     boxSizing: 'border-box',
   },
 });
-
-type LoggedInProfileItemsProps = {
-  handleProfileMenuClose: () => void;
-  handleLogout: () => void;
-};
-
-function LoggedInProfileItems({ handleProfileMenuClose, handleLogout }: LoggedInProfileItemsProps) {
-  return (
-    <>
-      <MenuItem onClick={handleProfileMenuClose}>
-        <ListItemIcon>
-          <AccountBoxIcon />
-        </ListItemIcon>
-        Profile
-      </MenuItem>
-      <Divider />
-      <MenuItem onClick={handleProfileMenuClose}>
-        <ListItemIcon>
-          <Settings fontSize="small" />
-        </ListItemIcon>
-        Settings
-      </MenuItem>
-      <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-        <ListItemIcon>
-          <Logout fontSize="small" color="error"/>
-        </ListItemIcon>
-        Logout
-      </MenuItem>
-    </>
-  );
-}
-
-type LoggedOutProfileItemsProps = {
-  handleSignIn: () => void;
-};
-
-function LoggedOutProfileItems({ handleSignIn }: LoggedOutProfileItemsProps) {
-  return (
-    <MenuItem onClick={handleSignIn} sx={{ color: 'primary.main' }}>
-      <ListItemIcon>
-        <LoginIcon fontSize="small" color="primary"/>
-      </ListItemIcon>
-      Sign up
-    </MenuItem>
-  );
-}
 
 
 type Props = {
@@ -152,31 +99,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     navigate('/');
   }
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteNote,
-
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['notes'] });
-      const previous = queryClient.getQueryData(['notes']);
-
-      return { previous };
-    },
-
-    onError: (_err, _id, context) => {
-      queryClient.setQueryData(['notes'], context?.previous);
-    },
-
-    onSuccess: () => {
-      const updatedNotes: Note[] = queryClient.getQueryData(['notes']) ?? [];
-      if (currentNoteId === menuNoteId && updatedNotes.length > 0) {
-        handleSelectCurrentNoteId(updatedNotes[updatedNotes.length - 1].id);
-      }
-      handleNoteMenuClose();
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-      enqueueSnackbar(`Deleted note ${menuNoteId}`)
-    },
-  });
-
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -208,6 +130,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
         },
       }}
     >
+      {/* New Notes + Logo */}
       <Stack
         direction="row"
         sx={{
@@ -228,7 +151,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             maxWidth: { xs: 350, md: 250 },
           }}
           alt="Waypoint Logo"
-          src={Logo} // 2. Pass imported reference to src
+          src={Logo}
         />
         <Stack direction={'row'} spacing={2}>
           <Button
@@ -248,7 +171,8 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           </IconButton>
         </Stack>
       </Stack>
-
+            
+      {/* Notes List */}
       <Box
         sx={{
           overflow: 'auto',
@@ -264,53 +188,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           onMenuOpen={handleNoteMenuOpen}
         />
       </Box>
-
-      {/* Ellipsis context menu */}
-      <Menu
-        anchorEl={noteMenuAnchor}
-        open={Boolean(noteMenuAnchor)}
-        onClose={handleNoteMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        slotProps={{
-          paper: {
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          },
-        }}
-      >
-        <MenuItem
-          onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
-          sx={{ color: 'error.main' }}
-        >
-          <ListItemIcon>
-            <DeleteIcon />
-          </ListItemIcon>
-          Delete
-        </MenuItem>
-      </Menu>
 
       {/* Profile */}
       <Stack
@@ -345,56 +222,23 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             {user?.is_anonymous ? 'Anonymous cockatoo' : user?.email}
           </Typography>
         </Box>
-
       </Stack>
 
+      {/* Triple dot menu */}
+      <NoteEllipsisMenu
+        anchorEl={noteMenuAnchor}
+        handleNoteMenuClose={handleNoteMenuClose}
+        noteId={menuNoteId}
+        handleSelectCurrentNoteId={handleSelectCurrentNoteId}
+        currentNoteId={currentNoteId}
+      />
+
       {/* Profile Menu */}
-      <Menu
+      <ProfileMenu
         anchorEl={profileMenuAnchor}
-        open={Boolean(profileMenuAnchor)}
-        onClose={handleProfileMenuClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        autoFocus={false}
-        slotProps={{
-          list: {
-            sx: {
-              py: 0,
-            },
-          },
-          paper: {
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          },
-        }}>
-        {user?.is_anonymous ? (
-          <LoggedOutProfileItems handleSignIn={() => navigate('/signup')} />
-        ) : (
-          <LoggedInProfileItems handleLogout={handleLogout} handleProfileMenuClose={handleProfileMenuClose} />
-        )}
-      </Menu>
+        handleProfileMenuClose={handleProfileMenuClose}
+        handleLogout={handleLogout}
+      />
     </Drawer >
   );
 }
