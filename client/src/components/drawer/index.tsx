@@ -18,6 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuContent from "./MenuContent";
@@ -80,8 +81,8 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
       handleSelectCurrentNoteId(data.id);
     },
-    onError: (error) => {
-      console.log(`Failed to create note: ${error}`);
+    onError: () => {
+      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error', autoHideDuration: 5000 });
     },
   });
 
