@@ -48,27 +48,42 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const navigate = useNavigate();
   const [noteMenuAnchor, setNoteMenuAnchor] = useState<null | HTMLElement>(null);
   const [profileMenuAnchor, setProfileMenuAnchor] = useState<null | HTMLElement>(null);
-
+  
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
-
+  
   const { data: user } = useUser();
-
+  
   const queryClient = useQueryClient();
-
+  
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
+  
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: ['notes'],
     queryFn: async () => {
       const { data } = await supabase
-        .from('notes')
-        .select()
-        .order("created_at", { ascending: true });
+      .from('notes')
+      .select()
+      .order("created_at", { ascending: true });
       return data ?? [];
     },
     staleTime: 1000 * 60 * 5,
   });
-
+  
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (!user?.id) throw new Error('No user');
+      const { data, error } = await createNote('', user.id);
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: async (data) => {
+      queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
+      handleSelectCurrentNoteId(data.id);
+    },
+    onError: (error) => {
+      console.log(`Failed to create note: ${error}`);
+    },
+  });
 
   const handleNoteMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
     e.stopPropagation();
@@ -100,21 +115,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   }
 
 
-  const createMutation = useMutation({
-    mutationFn: async () => {
-      if (!user?.id) throw new Error('No user');
-      const { data, error } = await createNote('', user.id);
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: async (data) => {
-      queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-      handleSelectCurrentNoteId(data.id);
-    },
-    onError: (error) => {
-      console.log(`Failed to create note: ${error}`);
-    },
-  });
 
 
   return (
