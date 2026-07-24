@@ -4,25 +4,32 @@ import { createNote, deleteNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
 import AddIcon from '@mui/icons-material/AddOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import Logout from '@mui/icons-material/Logout';
+import Settings from '@mui/icons-material/Settings';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Divider from '@mui/material/Divider';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
+import Tooltip from '@mui/material/Tooltip';
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MenuContent from "./MenuContent";
 import Logo from '/waypoint_logo_3d.png';
-import { useNavigate } from "react-router-dom";
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -258,6 +265,9 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
           sx={{ color: 'error.main' }}
         >
+          <ListItemIcon>
+            <DeleteIcon />
+          </ListItemIcon>
           Delete
         </MenuItem>
       </Menu>
@@ -272,14 +282,25 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           borderTop: '1px solid',
           borderColor: 'divider',
         }}
-        onClick={handleProfileMenuOpen}
       >
-        <Avatar
-          sizes="small"
-          alt="Wavid Wim"
-          src="/cockatoo2.jpg"
-          sx={{ width: 36, height: 36 }}
-        />
+        <Tooltip title="Account settings">
+          <IconButton
+            disabled={user?.is_anonymous ? true : false}
+            onClick={handleProfileMenuOpen}
+            size="small"
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open}
+          >
+            <Avatar
+              sizes="small"
+              alt="Wavid Wim"
+              src="/cockatoo2.jpg"
+              sx={{ width: 36, height: 36 }}
+            />
+          </IconButton>
+        </Tooltip>
+
         <Box sx={{ display: 'flex', alignItems: 'center', }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
             {user?.is_anonymous ? 'Anonymous cockatoo' : user?.email}
@@ -287,13 +308,21 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
         </Box>
 
       </Stack>
+
+      {/* Profile Menu */}
       <Menu
         anchorEl={profileMenuAnchor}
         open={Boolean(profileMenuAnchor)}
         onClose={handleProfileMenuClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoFocus={false}
         slotProps={{
+          list: {
+            sx: {
+              py: 0,
+            },
+          },
           paper: {
             elevation: 0,
             sx: {
@@ -321,10 +350,26 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             },
           },
         }}>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <AccountBoxIcon />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
         <MenuItem
           onClick={handleLogout}
           sx={{ color: 'error.main' }}
         >
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
           Logout
         </MenuItem>
       </Menu>

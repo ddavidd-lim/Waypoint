@@ -69,6 +69,7 @@ export default memo(
                 </Stack>
 
                 <IconButton
+                  variant='noteMenu'
                   size="small"
                   onClick={(e) => onMenuOpen(e, note.id)}
                   className="hover-actions"
