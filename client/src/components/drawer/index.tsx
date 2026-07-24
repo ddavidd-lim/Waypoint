@@ -42,14 +42,16 @@ type Props = {
 }
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
-
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
 
+  const { data: user } = useUser();
+
   const queryClient = useQueryClient();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
 
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: ['notes'],
@@ -63,6 +65,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     staleTime: 1000 * 60 * 5,
   });
 
+
   const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
     e.stopPropagation();
     setMenuAnchor(e.currentTarget);
@@ -72,6 +75,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const handleMenuClose = () => {
     setMenuAnchor(null);
   };
+
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
@@ -97,8 +101,8 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       enqueueSnackbar(`Deleted note ${menuNoteId}`)
     },
   });
+  
 
-  const { data: user } = useUser();
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error('No user');
@@ -114,6 +118,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       console.log(`Failed to create note: ${error}`);
     },
   });
+
 
   return (
     <Drawer
@@ -251,7 +256,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
-            Anonymous Cockatoo
+            {user?.is_anonymous ? 'Anonymous cockatoo' : user?.email}
           </Typography>
           {/* <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}> */}
             {/* {user?.id} */}
