@@ -43,7 +43,9 @@ type Props = {
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
   const theme = useTheme();
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [noteMenuAnchor, setNoteMenuAnchor] = useState<null | HTMLElement>(null);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState<null | HTMLElement>(null);
+
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
 
   const { data: user } = useUser();
@@ -66,14 +68,26 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   });
 
 
-  const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
+  const handleNoteMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
     e.stopPropagation();
-    setMenuAnchor(e.currentTarget);
+    setNoteMenuAnchor(e.currentTarget);
     setMenuNoteId(noteId);
   }, []);
 
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
+  const handleProfileMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+
+    if (user?.is_anonymous) return;
+
+    setProfileMenuAnchor(e.currentTarget);
+  }, [user])
+
+  const handleNoteMenuClose = () => {
+    setNoteMenuAnchor(null);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchor(null);
   };
 
 
@@ -96,12 +110,12 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       if (currentNoteId === menuNoteId && updatedNotes.length > 0) {
         handleSelectCurrentNoteId(updatedNotes[updatedNotes.length - 1].id);
       }
-      handleMenuClose();
+      handleNoteMenuClose();
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       enqueueSnackbar(`Deleted note ${menuNoteId}`)
     },
   });
-  
+
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -186,15 +200,15 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           notes={notes}
           handleSelectCurrentNoteId={handleSelectCurrentNoteId}
           currentNoteId={currentNoteId}
-          onMenuOpen={handleMenuOpen}
+          onMenuOpen={handleNoteMenuOpen}
         />
       </Box>
 
       {/* Ellipsis context menu */}
       <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
+        anchorEl={noteMenuAnchor}
+        open={Boolean(noteMenuAnchor)}
+        onClose={handleNoteMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{
@@ -246,7 +260,9 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           alignItems: 'center',
           borderTop: '1px solid',
           borderColor: 'divider',
+          background: 'red'
         }}
+        onClick={handleProfileMenuOpen}
       >
         <Avatar
           sizes="small"
@@ -254,15 +270,57 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           src="/cockatoo2.jpg"
           sx={{ width: 36, height: 36 }}
         />
-        <Box sx={{ mr: 'auto' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
             {user?.is_anonymous ? 'Anonymous cockatoo' : user?.email}
           </Typography>
-          {/* <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}> */}
-            {/* {user?.id} */}
-          {/* </Typography> */}
         </Box>
+
       </Stack>
+      <Menu
+        anchorEl={profileMenuAnchor}
+        open={Boolean(profileMenuAnchor)}
+        onClose={handleProfileMenuClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          },
+        }}>
+        <MenuItem
+          onClick={() => {
+            supabase.auth.signOut();
+            handleProfileMenuClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          Logout
+        </MenuItem>
+      </Menu>
     </Drawer>
   );
 }
