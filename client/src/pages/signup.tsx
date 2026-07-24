@@ -20,6 +20,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
 
 
 
@@ -54,18 +55,20 @@ export default function Signup() {
 
   const onSubmit = handleSubmit(
     async (formData) => {
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         email: formData.email,
         password: formData.password,
       });
 
       if (error) {
-        setSubmitError(error.message);
+        console.log('Error signing up:', error);
+        setSubmitError("An account with this email already exists or there was an error creating the account. Please try again.");
         return;
       }
       setSubmitError(null);
 
-      console.log('Signed up:', data.user);
+      enqueueSnackbar('Account created successfully!', { variant: 'success', autoHideDuration: 5000 });
+
       navigate('/');
     },
     (errors) => {
@@ -84,7 +87,7 @@ export default function Signup() {
       justifyContent: 'center',
       alignItems: 'center',
     }}>
-      <Paper component={'form'} onSubmit={onSubmit} sx={{ p: 4 }}>
+      <Paper component={'form'} onSubmit={onSubmit} sx={{ p: 4, maxWidth: 400, width: '100%' }}>
         <Stack direction={'column'} spacing={2}>
           <Stack>
             <Typography variant='h6' sx={{ fontWeight: 600 }}>
@@ -190,7 +193,7 @@ export default function Signup() {
             </Typography>
           )}
 
-          <Button sx={{ backgroundColor: 'green' }} type='submit' disabled={formState.isSubmitting}>
+          <Button variant='contained' color='primary' type='submit' disabled={formState.isSubmitting}>
             {formState.isSubmitting ? 'Signing up...' : 'Sign Up'}
           </Button>
 

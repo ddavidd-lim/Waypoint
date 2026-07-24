@@ -16,24 +16,26 @@ export const getTheme = (isDarkMode: boolean) =>
         },
       },
       MuiButton: {
-        styleOverrides: {
-          root: ({ theme }) => ({
-            textTransform: 'none',
-            borderRadius: 6,
-            fontWeight: 500,
-            color: theme.palette.text.secondary,
-            backgroundColor:
-              theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.055)'
-                : 'rgba(55, 53, 47, 0.06)',
-            '&:hover': {
+        variants: [
+          {
+            props: { variant: 'square' },
+            style: ({ theme }) => ({
+              textTransform: 'none',
+              borderRadius: 6,
+              fontWeight: 500,
+              color: theme.palette.text.secondary,
               backgroundColor:
                 theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : 'rgba(55, 53, 47, 0.12)',
-            },
-          }),
-        },
+                  ? 'rgba(255, 255, 255, 0.055)'
+                  : 'rgba(55, 53, 47, 0.06)',
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.1)'
+                    : 'rgba(55, 53, 47, 0.12)',
+              },
+            }),
+          }]
       },
       MuiIconButton: {
         variants: [

@@ -73,7 +73,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
         }}
       >
         <Box>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
           </IconButton>
         </Box>

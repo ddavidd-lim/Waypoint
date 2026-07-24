@@ -57,7 +57,7 @@ export function PlacePopover({ anchor, placeId, label, secondaryText, onClose }:
             <Typography variant="caption" color="text.secondary">{secondaryText}</Typography>
           </Box>
         </Box>
-        <IconButton size="small" href={mapsUrl} target="_blank" rel="noopener noreferrer">
+        <IconButton variant='noteMenu' size="small" href={mapsUrl} target="_blank" rel="noopener noreferrer">
           <OpenInNewIcon fontSize="small" />
         </IconButton>
       </Box>

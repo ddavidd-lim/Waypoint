@@ -156,17 +156,17 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
         <Stack direction={'row'} spacing={2}>
           <Button
             fullWidth
-            variant="text"
+            variant="square"
             endIcon={<AddIcon />}
             onClick={() => createMutation.mutateAsync()}
             sx={{
-              justifyContent: 'flex-start',
+              whiteSpace: 'nowrap',
             }}
           >
             New note
           </Button>
 
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
           </IconButton>
         </Stack>

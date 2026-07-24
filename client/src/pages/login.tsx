@@ -149,7 +149,7 @@ export default function Login() {
             </Typography>
           )}
 
-          <Button type='submit' sx={{ backgroundColor: 'green' }} disabled={formState.isSubmitting}>
+          <Button type='submit' variant='contained' color='primary' disabled={formState.isSubmitting}>
             {formState.isSubmitting ? 'Logging in' : 'Login'}
           </Button>
           <Box>

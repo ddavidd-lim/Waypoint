@@ -153,6 +153,7 @@ export default function Notes() {
         <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
 
           <IconButton
+            variant='noteMenu'
             color="inherit"
             onClick={handleLeftDrawerOpen}
             sx={{
@@ -172,6 +173,7 @@ export default function Notes() {
           <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
 
           <IconButton
+            variant='noteMenu'
             onClick={handleRightDrawerOpen}
             sx={{
               position: 'absolute',

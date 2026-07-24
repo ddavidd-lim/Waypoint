@@ -5,12 +5,24 @@ import '@mui/material/IconButton';
 
 declare module '@mui/material/IconButton' {
   // 1. Add the variant prop to the IconButton properties
-  interface IconButtonOwnProps  {
+  interface IconButtonOwnProps {
     variant?: 'noteMenu'; // Add your custom variant strings here
   }
 
   // 2. Map the variant to the internal overrides system
   interface IconButtonPropsVariantOverrides {
     noteMenu: true;
+  }
+}
+
+declare module '@mui/material/Button' {
+  // 1. Add the variant prop to the Button properties
+  interface ButtonOwnProps {
+    variant?: 'square'; // Add your custom variant strings here
+  }
+
+  // 2. Map the variant to the internal overrides system
+  interface ButtonPropsVariantOverrides {
+    square: true;
   }
 }

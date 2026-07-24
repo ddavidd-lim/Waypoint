@@ -6,11 +6,12 @@ import { enqueueSnackbar, closeSnackbar, type SnackbarKey } from "notistack";
 import { router } from "@/routers";
 
 export function showSignInSnackbar(): SnackbarKey {
-  const key = enqueueSnackbar("Sign in to save your notes", {
+  const key = enqueueSnackbar("Save your notes across devices by creating an account", {
     persist: true,
     action: (id) => (
       <Stack direction="row" spacing={1}>
         <Button
+          variant='square'
           color="inherit"
           size="small"
           onClick={() => {
