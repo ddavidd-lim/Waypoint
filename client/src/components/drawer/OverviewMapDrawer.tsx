@@ -59,6 +59,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           width: RIGHT_DRAWER_WIDTH,
           boxSizing: 'border-box',
         },
+        pointerEvents: open ? 'auto' : 'none',
       }}
     >
       <Stack
