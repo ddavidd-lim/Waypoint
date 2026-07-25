@@ -33,7 +33,7 @@ export default memo(
         <List dense>
           {notes.map((note) => (
             <ListItem key={note.id} disablePadding sx={{ display: 'block' }}>
-              <Tooltip title={note.title} placement='right'>
+              <Tooltip enterDelay={500} title={note.title} placement='right'>
                 <ListItemButton
                   onClick={() => handleSelectCurrentNoteId(note.id)}
                   className={note.id === currentNoteId ? 'selected' : ''}
