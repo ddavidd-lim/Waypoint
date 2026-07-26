@@ -109,13 +109,12 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     handleProfileMenuClose();
+
     await queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
     await queryClient.invalidateQueries({ queryKey: ['note'] });
     await queryClient.invalidateQueries({ queryKey: ['current-user'] });
-    navigate('/');
+    navigate('/login');
   }
-
-
 
 
   return (

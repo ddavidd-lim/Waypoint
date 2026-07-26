@@ -56,17 +56,19 @@ export default function Login() {
 
   const onSubmit = handleSubmit(
     async (formData) => {
-      const { error } = await supabase.auth.signInWithPassword({ email: formData.email, password: formData.password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email: formData.email, password: formData.password });
 
       if (error) {
         setSubmitError(error.message);
         return;
       }
       setSubmitError(null);
+      
+      queryClient.setQueryData(['current-user'], data.user);
 
       await queryClient.invalidateQueries({ queryKey: ['notes'] });
       await queryClient.invalidateQueries({ queryKey: ['note'] });
-      await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+
       navigate('/');
     },
     (errors) => {
