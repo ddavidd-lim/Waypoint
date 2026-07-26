@@ -79,7 +79,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     },
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-      handleSelectCurrentNoteId(data.id);
+      navigate(`/notes/${data.id}`)
     },
     onError: () => {
       enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error', autoHideDuration: 5000 });

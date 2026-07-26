@@ -40,6 +40,7 @@ export default function NoteEllipsisMenu({ anchorEl, noteId, handleNoteMenuClose
       }
       handleNoteMenuClose();
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.invalidateQueries({ queryKey: ['note'] });
       enqueueSnackbar(`Deleted note ${noteId}`)
     },
   });
