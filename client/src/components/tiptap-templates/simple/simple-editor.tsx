@@ -299,7 +299,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
   })
 
   const { data: note } = useQuery({
-    queryKey: ['note', noteId],
+    queryKey: ['notes', noteId],
     queryFn: async () => {
       if (!noteId) return null;
 

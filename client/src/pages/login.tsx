@@ -67,7 +67,6 @@ export default function Login() {
       queryClient.setQueryData(['current-user'], data.user);
 
       await queryClient.invalidateQueries({ queryKey: ['notes'] });
-      await queryClient.invalidateQueries({ queryKey: ['note'] });
 
       navigate('/');
     },
@@ -81,7 +80,6 @@ export default function Login() {
 
     await queryClient.invalidateQueries({ queryKey: ['current-user'] });
     await queryClient.invalidateQueries({ queryKey: ['notes'] });
-    await queryClient.invalidateQueries({ queryKey: ['note'] });
 
     navigate('/');
   };
