@@ -115,7 +115,7 @@ export default function Notes() {
 
   // Reset creation of first note if the user changes: sign-in + login + logout
   useEffect(() => {
-    isCreating.current = false;
+    if (!user?.id) isCreating.current = false;
   }, [user?.id]);
 
   // Left Drawer state

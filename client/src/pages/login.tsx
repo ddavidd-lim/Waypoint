@@ -63,7 +63,7 @@ export default function Login() {
         return;
       }
       setSubmitError(null);
-      
+
       queryClient.setQueryData(['current-user'], data.user);
 
       await queryClient.invalidateQueries({ queryKey: ['notes'] });
@@ -75,6 +75,16 @@ export default function Login() {
       console.log('Validation errors:', errors);
     }
   )
+
+  const handleSkip = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    await queryClient.invalidateQueries({ queryKey: ['notes'] });
+    await queryClient.invalidateQueries({ queryKey: ['note'] });
+
+    navigate('/');
+  };
 
   return (
     <Box sx={{
@@ -164,7 +174,7 @@ export default function Login() {
           </Box>
           <Box>
             <Typography>
-              <Link component={RouterLink} to={'/'}>Skip for now</Link>
+              <Link component={RouterLink} to={'/'} onClick={handleSkip}>Skip for now</Link>
             </Typography>
           </Box>
         </Stack>
