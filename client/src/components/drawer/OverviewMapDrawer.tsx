@@ -59,6 +59,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           width: RIGHT_DRAWER_WIDTH,
           boxSizing: 'border-box',
         },
+        pointerEvents: open ? 'auto' : 'none',
       }}
     >
       <Stack
@@ -73,7 +74,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
         }}
       >
         <Box>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
           </IconButton>
         </Box>

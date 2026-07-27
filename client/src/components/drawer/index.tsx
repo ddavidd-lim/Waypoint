@@ -1,26 +1,29 @@
 import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 import { useUser } from "@/hooks/useUser";
-import { createNote, deleteNote } from "@/repositories/notes";
+import { createNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
 import type { Note } from "@/types/db";
 import AddIcon from '@mui/icons-material/AddOutlined';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
+import Tooltip from '@mui/material/Tooltip';
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MenuContent from "./MenuContent";
+import NoteEllipsisMenu from "./NoteEllipsisMenu";
+import ProfileMenu from "./ProfileMenu";
 import Logo from '/waypoint_logo_3d.png';
 
 const Drawer = styled(MuiDrawer)({
@@ -33,19 +36,23 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
+
 type Props = {
   handleSelectCurrentNoteId: (noteId: string) => void;
   currentNoteId: string;
   handleDrawerClose: () => void;
   open: boolean;
-
 }
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
-
   const theme = useTheme();
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const [noteMenuAnchor, setNoteMenuAnchor] = useState<null | HTMLElement>(null);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState<null | HTMLElement>(null);
+
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
+
+  const { data: user } = useUser();
 
   const queryClient = useQueryClient();
 
@@ -63,42 +70,6 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     staleTime: 1000 * 60 * 5,
   });
 
-  const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
-    e.stopPropagation();
-    setMenuAnchor(e.currentTarget);
-    setMenuNoteId(noteId);
-  }, []);
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-  };
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteNote,
-
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['notes'] });
-      const previous = queryClient.getQueryData(['notes']);
-
-      return { previous };
-    },
-
-    onError: (_err, _id, context) => {
-      queryClient.setQueryData(['notes'], context?.previous);
-    },
-
-    onSuccess: () => {
-      const updatedNotes: Note[] = queryClient.getQueryData(['notes']) ?? [];
-      if (currentNoteId === menuNoteId && updatedNotes.length > 0) {
-        handleSelectCurrentNoteId(updatedNotes[updatedNotes.length - 1].id);
-      }
-      handleMenuClose();
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-      enqueueSnackbar(`Deleted note ${menuNoteId}`)
-    },
-  });
-
-  const { data: user } = useUser();
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error('No user');
@@ -108,12 +79,40 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     },
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-      handleSelectCurrentNoteId(data.id);
+      navigate(`/notes/${data.id}`)
     },
-    onError: (error) => {
-      console.log(`Failed to create note: ${error}`);
+    onError: () => {
+      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error', autoHideDuration: 5000 });
     },
   });
+
+  const handleNoteMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
+    e.stopPropagation();
+    setNoteMenuAnchor(e.currentTarget);
+    setMenuNoteId(noteId);
+  }, []);
+
+  const handleProfileMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+
+    setProfileMenuAnchor(e.currentTarget);
+  }, [])
+
+  const handleNoteMenuClose = () => {
+    setNoteMenuAnchor(null);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchor(null);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    handleProfileMenuClose();
+
+    navigate('/login');
+  }
+
 
   return (
     <Drawer
@@ -128,6 +127,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
         },
       }}
     >
+      {/* New Notes + Logo */}
       <Stack
         direction="row"
         sx={{
@@ -148,27 +148,28 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             maxWidth: { xs: 350, md: 250 },
           }}
           alt="Waypoint Logo"
-          src={Logo} // 2. Pass imported reference to src
+          src={Logo}
         />
         <Stack direction={'row'} spacing={2}>
           <Button
             fullWidth
-            variant="text"
+            variant="square"
             endIcon={<AddIcon />}
             onClick={() => createMutation.mutateAsync()}
             sx={{
-              justifyContent: 'flex-start',
+              whiteSpace: 'nowrap',
             }}
           >
             New note
           </Button>
 
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
           </IconButton>
         </Stack>
       </Stack>
 
+      {/* Notes List */}
       <Box
         sx={{
           overflow: 'auto',
@@ -181,56 +182,9 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           notes={notes}
           handleSelectCurrentNoteId={handleSelectCurrentNoteId}
           currentNoteId={currentNoteId}
-          onMenuOpen={handleMenuOpen}
+          onMenuOpen={handleNoteMenuOpen}
         />
       </Box>
-
-      {/* Ellipsis context menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        slotProps={{
-          paper: {
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          },
-        }}
-      >
-        {/* <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
-          {menuNoteId}
-        </Typography> */}
-        <MenuItem
-          onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
-          sx={{ color: 'error.main' }}
-        >
-          Delete
-        </MenuItem>
-      </Menu>
 
       {/* Profile */}
       <Stack
@@ -243,21 +197,45 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           borderColor: 'divider',
         }}
       >
-        <Avatar
-          sizes="small"
-          alt="Wavid Wim"
-          src="/cockatoo2.jpg"
-          sx={{ width: 36, height: 36 }}
-        />
-        <Box sx={{ mr: 'auto' }}>
+        <Tooltip title={user?.is_anonymous ? "Sign in" : "Account settings"}>
+          <IconButton
+            onClick={handleProfileMenuOpen}
+            size="small"
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open}
+          >
+            <Avatar
+              sizes="small"
+              alt="Wavid Wim"
+              src="/cockatoo2.jpg"
+              sx={{ width: 36, height: 36 }}
+            />
+          </IconButton>
+        </Tooltip>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px', color: 'text.secondary' }}>
-            Anonymous Cockatoo
+            {user?.is_anonymous ? 'Anonymous cockatoo' : user?.email}
           </Typography>
-          {/* <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}> */}
-            {/* {user?.id} */}
-          {/* </Typography> */}
         </Box>
       </Stack>
-    </Drawer>
+
+      {/* Triple dot menu */}
+      <NoteEllipsisMenu
+        anchorEl={noteMenuAnchor}
+        handleNoteMenuClose={handleNoteMenuClose}
+        noteId={menuNoteId}
+        handleSelectCurrentNoteId={handleSelectCurrentNoteId}
+        currentNoteId={currentNoteId}
+      />
+
+      {/* Profile Menu */}
+      <ProfileMenu
+        anchorEl={profileMenuAnchor}
+        handleProfileMenuClose={handleProfileMenuClose}
+        handleLogout={handleLogout}
+      />
+    </Drawer >
   );
 }

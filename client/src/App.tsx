@@ -2,7 +2,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { alpha, createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import {
   QueryClient,
   QueryClientProvider
@@ -10,8 +10,11 @@ import {
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
 import { useMemo } from 'react';
+import { RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './context/auth/AuthProvider';
 import { useDarkMode } from './context/theme-toggle/dark-mode-context';
-import Notes from './pages/notes';
+import { router } from './routers';
+import { getTheme } from './themes/themes';
 
 
 const queryClient = new QueryClient();
@@ -19,90 +22,7 @@ const queryClient = new QueryClient();
 export default function App() {
   const { isDarkMode } = useDarkMode();
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: isDarkMode ? 'dark' : 'light',
-          background: {
-            default: isDarkMode ? '#191919' : '#fafafa',
-            paper: isDarkMode ? '#202020' : '#ffffff',
-          },
-
-        },
-        components: {
-          MuiButtonBase: {
-            defaultProps: {
-              disableRipple: true,
-            },
-          },
-          MuiButton: {
-            styleOverrides: {
-              root: ({ theme }) => ({
-                textTransform: 'none',
-                borderRadius: 6,
-                fontWeight: 500,
-                color: theme.palette.text.secondary,
-                backgroundColor:
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(255, 255, 255, 0.055)'
-                    : 'rgba(55, 53, 47, 0.06)',
-                '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'dark'
-                      ? 'rgba(255, 255, 255, 0.1)'
-                      : 'rgba(55, 53, 47, 0.12)',
-                },
-              }),
-            },
-          },
-          MuiIconButton: {
-            styleOverrides: {
-              root: ({ theme }) => ({
-                borderRadius: 6,
-                color: theme.palette.text.secondary,
-                backgroundColor:
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(255, 255, 255, 0.055)'
-                    : 'rgba(55, 53, 47, 0.06)',
-                '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'dark'
-                      ? 'rgba(255, 255, 255, 0.1)'
-                      : 'rgba(55, 53, 47, 0.12)',
-                },
-              }),
-            },
-          },
-          MuiListItemButton: {
-            styleOverrides: {
-              root: ({ theme }) => ({
-                borderRadius: theme.shape.borderRadius,
-                paddingLeft: theme.spacing(1),
-                paddingRight: theme.spacing(1),
-                paddingTop: theme.spacing(0.75),
-                paddingBottom: theme.spacing(0.75),
-                height: 40,
-                color: theme.palette.text.secondary,
-                '& .hover-actions': {
-                  visibility: 'hidden',
-                },
-                '&:hover .hover-actions': {
-                  visibility: 'visible',
-                },
-                '&.selected': {
-                  backgroundColor: alpha(theme.palette.action.selected, 0.15),
-                },
-                '&.selected .hover-actions': {
-                  visibility: 'visible',
-                },
-              }),
-            }
-          }
-        },
-      }),
-    [isDarkMode]
-  );
+  const theme = useMemo(() => getTheme(isDarkMode), [isDarkMode]);
 
   return (
     // https://visgl.github.io/react-google-maps/docs/api-reference/components/api-provider
@@ -112,19 +32,22 @@ export default function App() {
       onLoad={() => console.log('Maps API has loaded.')}>
 
       <ThemeProvider theme={theme}>
-        <SnackbarProvider autoHideDuration={1500} maxSnack={4} action={(id) => (
-          <IconButton onClick={() => closeSnackbar(id)}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        )}
-          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-        />
-        <QueryClientProvider client={queryClient}>
-          <Box sx={{ display: 'flex', width: '100%', height: '100dvh', overflow: 'hidden' }}>
-            <Notes />
-          </Box>
-        </QueryClientProvider>
+        <AuthProvider>
+          <SnackbarProvider autoHideDuration={1500} maxSnack={4} action={(id) => (
+            <IconButton variant='noteMenu' onClick={() => closeSnackbar(id)}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          )}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          />
+          <QueryClientProvider client={queryClient}>
+            <Box sx={{ display: 'flex', width: '100%', height: '100dvh', overflow: 'hidden' }}>
+              <RouterProvider router={router} />
+            </Box>
+          </QueryClientProvider>
+        </AuthProvider>
       </ThemeProvider>
+
     </APIProvider>
   );
 }

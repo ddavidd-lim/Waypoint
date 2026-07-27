@@ -90,6 +90,7 @@ import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
+import { useNavigate } from "react-router-dom"
 
 
 const MainToolbarContent = ({
@@ -231,6 +232,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
   const noteIdRef = useRef(noteId);
   const justLoadedRef = useRef(false);
 
+  const navigate = useNavigate();
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -304,6 +306,8 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
       if (!noteId) return null;
 
       const { data } = await supabase.from('notes').select('*').eq('id', noteId).limit(1);
+
+      if (data?.length === 0) navigate('/');
 
       return data?.[0] ?? null
     },

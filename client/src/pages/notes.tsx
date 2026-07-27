@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import NotesDrawer from '@/components/drawer';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
-import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
-import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
 import type { Place } from '@/types/places';
@@ -15,77 +13,45 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 
-import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
+import { AuthContext } from '@/context/auth/authContext';
+import { showSignInSnackbar } from '@/utils/showSignInSnackbar';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { closeSnackbar } from 'notistack';
+import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
+import { Main } from '@/components/main';
+import { useNavigate, useParams } from 'react-router-dom';
 
-
-
-const Main = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'openLeft' && prop !== 'openRight'
-})<{
-  openLeft?: boolean;
-  openRight?: boolean;
-}>(({ theme }) => ({
-  flexGrow: 1,
-  overflow: 'hidden',
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${LEFT_DRAWER_WIDTH}px`,
-  marginRight: `-${RIGHT_DRAWER_WIDTH}px`,
-  [theme.breakpoints.down('sm')]: {
-    marginLeft: 0,
-    marginRight: 0,
-  },
-  variants: [
-    {
-      props: ({ openLeft }) => openLeft,
-      style: {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      },
-    },
-    {
-      props: ({ openRight }) => openRight,
-      style: {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginRight: 0,
-      },
-    },
-  ],
-}));
 
 export default function Notes() {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
 
   const isCreating = useRef(false);
-  const [selectedNoteId, setSelectedNoteId] = useState<string>();
+
+  const { id: selectedNoteId } = useParams<{ id: string }>();
+
+  const navigate = useNavigate();
+
   const [places, setPlaces] = useState<Place[]>([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSelectCurrentNoteId = useCallback((noteId: string) => {
-    setSelectedNoteId(noteId);
+    navigate(`/notes/${noteId}`);
   }, []);
 
+  const { user: authUser } = useContext(AuthContext)
+
   const { data: notes, isSuccess } = useQuery<Note[]>({
-    queryKey: ['notes'],
+    queryKey: ['notes', user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from('notes')
@@ -93,10 +59,21 @@ export default function Notes() {
         .order("created_at", { ascending: true });
       return data ?? [];
     },
+    enabled: !!user?.id,
     staleTime: 1000 * 60 * 5,
   });
 
   const currentNoteId = selectedNoteId ?? notes?.[0]?.id;
+
+  // Redirect to /notes/:id once we know which note to show, if the URL doesn't already have one
+  useEffect(() => {
+    if (selectedNoteId) return;        // URL already has an id, nothing to do
+    if (!isSuccess) return;            // notes haven't loaded yet
+    if (!notes?.[0]?.id) return;       // no notes to redirect to yet (e.g. still creating one)
+
+    navigate(`/notes/${notes[0].id}`, { replace: true });
+  }, [selectedNoteId, isSuccess, notes, navigate]);
+
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -108,16 +85,12 @@ export default function Notes() {
     },
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-      setSelectedNoteId(data.id);
+      navigate(`/notes/${data.id}`);
     },
     onError: (error) => {
       console.log(`Failed to create note: ${error}`);
     },
   });
-
-  useEffect(() => {
-    initAuth();
-  }, []);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -129,6 +102,21 @@ export default function Notes() {
 
     createMutation.mutate();
   }, [user?.id, isSuccess, notes?.length]);
+
+  useEffect(() => {
+    if (!authUser?.is_anonymous) return;
+
+    const key = showSignInSnackbar();
+
+    return () => {
+      closeSnackbar(key);
+    };
+  }, [authUser]);
+
+  // Reset creation of first note if the user changes: sign-in + login + logout
+  useEffect(() => {
+    if (!user?.id) isCreating.current = false;
+  }, [user?.id]);
 
   // Left Drawer state
   const [openLeftDrawer, setOpenLeftDrawer] = useState(isMobile ? false : true);
@@ -165,6 +153,7 @@ export default function Notes() {
         <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
 
           <IconButton
+            variant='noteMenu'
             color="inherit"
             onClick={handleLeftDrawerOpen}
             sx={{
@@ -184,6 +173,7 @@ export default function Notes() {
           <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
 
           <IconButton
+            variant='noteMenu'
             onClick={handleRightDrawerOpen}
             sx={{
               position: 'absolute',

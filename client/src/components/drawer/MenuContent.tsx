@@ -10,6 +10,7 @@ import { alpha } from '@mui/material/styles';
 import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import { memo } from "react";
+import Tooltip from "@mui/material/Tooltip";
 
 
 type Props = {
@@ -32,56 +33,59 @@ export default memo(
         <List dense>
           {notes.map((note) => (
             <ListItem key={note.id} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                onClick={() => handleSelectCurrentNoteId(note.id)}
-                className={note.id === currentNoteId ? 'selected' : ''}
-                sx={(theme) => ({
-                  borderRadius: 2,
-                  px: 1,
-                  color: 'text.secondary',
-                  py: 0.75,
-                  height: 40,
-                  '& .hover-actions': {
-                    visibility: 'hidden',
-                  },
-                  '&:hover .hover-actions': {
-                    visibility: 'visible',
-                  },
-                  '&.selected': {
-                    backgroundColor: alpha(theme.palette.action.selected, 0.15),
-                  },
-                  '&.selected .hover-actions': {
-                    visibility: 'visible',
-                  },
-                })}
-              >
-                <TextSnippetOutlinedIcon sx={{ mr: 1 }} />
-                <Stack sx={{ flex: 1, width: 0 }}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
-                  >
-                    {note.title === '' ? 'Untitled' : note.title}
-                  </Typography>
-                  <Typography variant="subtitle2" sx={{ fontSize: 10 }}>
-                    {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
-                  </Typography>
-                </Stack>
-
-                <IconButton
-                  size="small"
-                  onClick={(e) => onMenuOpen(e, note.id)}
-                  className="hover-actions"
-                  sx={{
-                    backgroundColor: 'transparent',
-                    '&:hover': { backgroundColor: 'action.hover' },
-                    ml: 1,
-                  }}
-
+              <Tooltip enterDelay={500} title={note.title} placement='right'>
+                <ListItemButton
+                  onClick={() => handleSelectCurrentNoteId(note.id)}
+                  className={note.id === currentNoteId ? 'selected' : ''}
+                  sx={(theme) => ({
+                    borderRadius: 2,
+                    px: 1,
+                    color: 'text.secondary',
+                    py: 0.75,
+                    height: 40,
+                    '& .hover-actions': {
+                      visibility: 'hidden',
+                    },
+                    '&:hover .hover-actions': {
+                      visibility: 'visible',
+                    },
+                    '&.selected': {
+                      backgroundColor: alpha(theme.palette.action.selected, 0.15),
+                    },
+                    '&.selected .hover-actions': {
+                      visibility: 'visible',
+                    },
+                  })}
                 >
-                  <MoreHorizIcon fontSize="small" />
-                </IconButton>
-              </ListItemButton>
+                  <TextSnippetOutlinedIcon sx={{ mr: 1 }} />
+                  <Stack sx={{ flex: 1, width: 0 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                    >
+                      {note.title === '' ? 'Untitled' : note.title}
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ fontSize: 10 }}>
+                      {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
+                    </Typography>
+                  </Stack>
+
+                  <IconButton
+                    variant='noteMenu'
+                    size="small"
+                    onClick={(e) => onMenuOpen(e, note.id)}
+                    className="hover-actions"
+                    sx={{
+                      backgroundColor: 'transparent',
+                      '&:hover': { backgroundColor: 'action.hover' },
+                      ml: 1,
+                    }}
+
+                  >
+                    <MoreHorizIcon fontSize="small" />
+                  </IconButton>
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
           ))}
         </List>
