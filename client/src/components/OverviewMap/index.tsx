@@ -1,7 +1,7 @@
 import { useRoute } from '@/hooks/useRoute';
 import type { Poi } from '@/types/places';
 import { AdvancedMarker, Map, Pin, Polyline, useMap } from '@vis.gl/react-google-maps';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 // https://developers.google.com/codelabs/maps-platform/maps-platform-101-react-js
 // https://developers.google.com/maps/documentation/javascript/reference/map#Map.fitBounds
@@ -10,8 +10,10 @@ import { useEffect } from 'react';
 
 
 
-const PoiMarkers = ({ pois, route }: { pois: Poi[]; route: google.maps.DirectionsResult | null }) => {
+const PoiMarkers = ({ pois, allPois, route }: { pois: Poi[]; allPois: Poi[]; route: google.maps.DirectionsResult | null }) => {
   const map = useMap();
+  const activeKeys = useMemo(() => new Set(pois.map((p) => p.key)), [pois]);
+
 
   useEffect(() => {
     if (!map || !pois.length) return;
@@ -35,20 +37,30 @@ const PoiMarkers = ({ pois, route }: { pois: Poi[]; route: google.maps.Direction
 
   return (
     <>
-      {pois.map((poi) => (
-        <AdvancedMarker key={poi.key} position={poi.location}>
-          <Pin />
-        </AdvancedMarker>
-      ))}
+      {allPois.map((poi) => {
+        const active = activeKeys.has(poi.key);
+        const index = pois.findIndex((p) => p.key === poi.key);
+        return (
+          <AdvancedMarker key={poi.key} position={poi.location}>
+            <Pin
+              background={active ? '#e81a1a' : '#c0c0c0'}
+              borderColor={active ? '#a20b0b' : '#9e9e9e'}
+              glyphColor="#fff"
+              glyphText={active ? String(index + 1) : ''}
+            />
+          </AdvancedMarker>
+        );
+      })}
     </>
   );
 };
 
 type Props = {
   pois: Poi[],
+  allPois: Poi[];
   showRoute: boolean
 };
-export function OverviewMap({ pois, showRoute }: Props) {
+export function OverviewMap({ pois, allPois, showRoute }: Props) {
   const { route } = useRoute(pois);
 
   return (
@@ -58,13 +70,13 @@ export function OverviewMap({ pois, showRoute }: Props) {
       defaultZoom={13}
       defaultCenter={{ lat: 34.0522, lng: -118.2437 }}
     >
-      <PoiMarkers pois={pois} route={route} />
+      <PoiMarkers pois={pois} allPois={allPois} route={showRoute ? route : null} />
 
       {/* https://visgl.github.io/react-google-maps/docs/api-reference/components/polyline */}
       {route && showRoute && (
         <Polyline
           path={route.routes[0].overview_path}
-          strokeColor="#1a73e8"
+          strokeColor="#241ae8"
           strokeWeight={5}
           strokeOpacity={0.8}
         />

@@ -2,32 +2,47 @@ import type { Poi } from '@/types/places';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, Checkbox, Paper, Stack, Typography } from '@mui/material';
 import { Reorder, useDragControls } from 'framer-motion';
-import { useMemo } from 'react';
-
 
 function PoiRow({
   poi,
-  checked,
+  included,
   onToggle,
 }: {
   poi: Poi;
-  checked: boolean;
+  included: boolean;
   onToggle: (key: string) => void;
 }) {
   const controls = useDragControls();
 
   return (
-    <Reorder.Item value={poi} dragListener={false} dragControls={controls} as="li" style={{ listStyle: 'none' }}>
-      <Paper variant="outlined" sx={{ mb: 1 }}>
+    <Reorder.Item
+      value={poi}
+      dragListener={false}
+      dragControls={controls}
+      as="li"
+      style={{ listStyle: 'none' }}
+    >
+      <Paper
+        variant="outlined"
+        sx={{ mb: 1, opacity: included ? 1 : 0.55 }}
+      >
         <Stack direction="row" sx={{ pr: 1, py: 0.5, alignItems: 'center' }}>
           <Box
             onPointerDown={(e) => controls.start(e)}
-            sx={{ display: 'flex', alignItems: 'center', px: 1, alignSelf: 'stretch', cursor: 'grab', touchAction: 'none' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              px: 1,
+              alignSelf: 'stretch',
+              cursor: 'grab',
+              touchAction: 'none',
+              '&:active': { cursor: 'grabbing' },
+            }}
           >
             <DragIndicatorIcon fontSize="small" color="disabled" />
           </Box>
 
-          <Checkbox checked={checked} onChange={() => onToggle(poi.key)} />
+          <Checkbox checked={included} onChange={() => onToggle(poi.key)} />
 
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography noWrap>{poi.name}</Typography>
@@ -42,26 +57,16 @@ function PoiRow({
 }
 
 export function PoiReorderList({
-  pois,
-  selected,
+  items,
+  excluded,
   onToggle,
-  order,
   onOrderChange,
 }: {
-  pois: Poi[];
-  selected: Set<string>;
-  onToggle: (id: string) => void;
-  order: string[] | null;
-  onOrderChange: (ids: string[]) => void;
+  items: Poi[];
+  excluded: Set<string>;
+  onToggle: (key: string) => void;
+  onOrderChange: (keys: string[]) => void;
 }) {
-  const items = useMemo(() => {
-    if (!order) return pois;
-    const byKey = new Map(pois.map((p) => [p.key, p]));
-    const ordered = order.flatMap((k) => byKey.get(k) ?? []);
-    const seen = new Set(order);
-    return [...ordered, ...pois.filter((p) => !seen.has(p.key))];
-  }, [pois, order]);
-
   return (
     <Reorder.Group
       axis="y"
@@ -74,7 +79,7 @@ export function PoiReorderList({
         <PoiRow
           key={poi.key}
           poi={poi}
-          checked={selected.has(poi.key)}
+          included={!excluded.has(poi.key)}
           onToggle={onToggle}
         />
       ))}

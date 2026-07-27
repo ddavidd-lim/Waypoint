@@ -1,7 +1,7 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useOrderedPois } from '@/hooks/useOrderedPois';
 import { usePlacePois } from '@/hooks/usePlacePois';
-import type { Place } from '@/types/places';
+import type { Place, Poi } from '@/types/places';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Box from "@mui/material/Box";
@@ -11,7 +11,7 @@ import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { OverviewMap } from '../OverviewMap';
 import { PoiReorderList } from './PoiRow';
 import { FormControlLabel, Switch } from '@mui/material';
@@ -27,6 +27,7 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
+const EMPTY: Poi[] = [];
 
 type Props = {
   handleDrawerClose: () => void;
@@ -36,14 +37,15 @@ type Props = {
 export default function OverviewMapDrawer({ handleDrawerClose, open, places }: Props) {
   const theme = useTheme();
 
-  const { data: pois = [] } = usePlacePois(places);
-  const { items, order, setOrder } = useOrderedPois(pois);
+  const { data: pois = EMPTY } = usePlacePois(places);
+  const { items, setOrder } = useOrderedPois(pois);
 
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
-  const [showRoute, setShowRoute] = useState(false);
+  const [excluded, setExcluded] = useState<Set<string>>(() => new Set());
+
+  const [showRoute, setShowRoute] = useState(true);
 
   const handleToggle = useCallback((id: string) => {
-    setSelected((prev) => {
+    setExcluded((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -53,6 +55,11 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       return next;
     });
   }, []);
+
+  const activePois = useMemo(
+    () => items.filter((p) => !excluded.has(p.key)),
+    [items, excluded]
+  );
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -79,7 +86,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
         <IconButton variant='noteMenu' onClick={handleDrawerClose}>
           {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
         </IconButton>
-        <Box sx={{ width: 1, display: 'flex', justifyContent: 'space-between'}}>
+        <Box sx={{ width: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
             Overview Map
           </Typography>
@@ -90,7 +97,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
                 size="small"
                 checked={showRoute}
                 onChange={(e) => setShowRoute(e.target.checked)}
-                disabled={items.length < 2}
+                disabled={activePois.length < 2}
               />
             }
             label="Show Route"
@@ -100,14 +107,13 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
         </Box>
       </Stack>
 
-      <OverviewMap pois={items} showRoute={showRoute} />
+      <OverviewMap pois={activePois} allPois={items} showRoute={showRoute} />
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
         <PoiReorderList
-          pois={pois}
-          order={order}
+          items={items}
           onOrderChange={setOrder}
-          selected={selected}
+          excluded={excluded}
           onToggle={handleToggle}
         />
       </Box>

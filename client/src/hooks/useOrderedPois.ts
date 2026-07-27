@@ -12,5 +12,5 @@ export function useOrderedPois(pois: Poi[]) {
     return [...ordered, ...pois.filter((p) => !seen.has(p.key))];
   }, [pois, order]);
 
-  return { items, order, setOrder };
+  return { items, setOrder };
 }
