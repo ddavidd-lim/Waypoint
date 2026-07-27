@@ -16,6 +16,7 @@ export interface PlaceItem {
   label: string
   secondaryText: string
   placeId: string
+  prediction: google.maps.places.PlacePrediction
 }
 
 export interface SuggestionListRef {
@@ -32,7 +33,7 @@ const PlaceSuggestionList = forwardRef<SuggestionListRef, SuggestionProps<PlaceI
       const item = items[index]
 
       if (item) {
-        command(items[selectedIndex])
+        command(item)
       }
     }
 
