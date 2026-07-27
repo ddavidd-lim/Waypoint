@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
 import { OverviewMap } from '../OverviewMap';
-import { PoiReorderList } from './PoiRow';
+import { PoiReorder } from './PoiReorder';
 
 
 const Drawer = styled(MuiDrawer)({
@@ -38,6 +38,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
   const theme = useTheme();
 
   const { data: pois = EMPTY } = usePlacePois(places);
+
   const { orderedPois, activeOrderedPois, excluded, setOrder, toggle } = useDraggablePois(pois);
 
   const [showRoute, setShowRoute] = useState(true);
@@ -116,7 +117,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       <OverviewMap pois={activeOrderedPois} allPois={orderedPois} showRoute={showRoute} autoPanEnabled={autoPanEnabled} />
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-        <PoiReorderList
+        <PoiReorder
           items={orderedPois}
           onOrderChange={setOrder}
           excluded={excluded}

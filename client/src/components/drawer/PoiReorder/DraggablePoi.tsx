@@ -1,17 +1,17 @@
 import type { Poi } from '@/types/places';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Box, Checkbox, Paper, Stack, Typography } from '@mui/material';
+import { Box, Checkbox, Chip, Paper, Stack, Typography } from '@mui/material';
 import { Reorder, useDragControls } from 'framer-motion';
 
-function PoiRow({
-  poi,
-  included,
-  onToggle,
-}: {
+type Props = {
   poi: Poi;
   included: boolean;
+  index?: number;
   onToggle: (key: string) => void;
-}) {
+  onCommit: () => void;
+}
+
+export function DraggablePoi({ poi, included, index, onToggle, onCommit }: Props) {
   const controls = useDragControls();
 
   return (
@@ -19,6 +19,7 @@ function PoiRow({
       value={poi}
       dragListener={false}
       dragControls={controls}
+      onDragEnd={onCommit}
       as="li"
       style={{ listStyle: 'none' }}
     >
@@ -44,45 +45,24 @@ function PoiRow({
 
           <Checkbox checked={included} onChange={() => onToggle(poi.key)} />
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography noWrap>{poi.name}</Typography>
-            <Typography variant="caption" color="text.secondary" noWrap>
-              {poi.city}, {poi.state}
-            </Typography>
-          </Box>
+          <Stack direction={'row'} spacing={1} sx={{ alignItems: 'center' }}>
+
+            <Chip label={index ?? '~'} sx={{
+              bgcolor: included ? '#e81a1a' : 'transparent',
+              fontSize: 12,
+              fontWeight: 600,
+            }} />
+
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography noWrap>{poi.name}</Typography>
+              <Typography variant="caption" color="text.secondary" noWrap>
+                {poi.city}, {poi.state}
+              </Typography>
+            </Box>
+          </Stack>
         </Stack>
       </Paper>
     </Reorder.Item>
   );
 }
 
-export function PoiReorderList({
-  items,
-  excluded,
-  onToggle,
-  onOrderChange,
-}: {
-  items: Poi[];
-  excluded: Set<string>;
-  onToggle: (key: string) => void;
-  onOrderChange: (keys: string[]) => void;
-}) {
-  return (
-    <Reorder.Group
-      axis="y"
-      values={items}
-      onReorder={(next) => onOrderChange(next.map((p) => p.key))}
-      as="ul"
-      style={{ listStyle: 'none', margin: 0, padding: 0 }}
-    >
-      {items.map((poi) => (
-        <PoiRow
-          key={poi.key}
-          poi={poi}
-          included={!excluded.has(poi.key)}
-          onToggle={onToggle}
-        />
-      ))}
-    </Reorder.Group>
-  );
-}
