@@ -14,7 +14,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useCallback, useMemo, useState } from 'react';
 import { OverviewMap } from '../OverviewMap';
 import { PoiReorderList } from './PoiRow';
-import { FormControlLabel, Switch } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 
 
 const Drawer = styled(MuiDrawer)({
@@ -43,6 +43,8 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
   const [excluded, setExcluded] = useState<Set<string>>(() => new Set());
 
   const [showRoute, setShowRoute] = useState(true);
+
+  const [autoPanEnabled, setAutoPanEnabled] = useState(true);
 
   const handleToggle = useCallback((id: string) => {
     setExcluded((prev) => {
@@ -90,24 +92,47 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
             Overview Map
           </Typography>
-
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                checked={showRoute}
-                onChange={(e) => setShowRoute(e.target.checked)}
-                disabled={activePois.length < 2}
-              />
-            }
-            label="Show Route"
-            slotProps={{ typography: { variant: 'body2' } }}
-            sx={{ mr: 0 }}
-          />
         </Box>
       </Stack>
+      <FormGroup
+        row
+        sx={{
+          px: 2,
+          py: 0.5,
+          gap: 2,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'action.hover',
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={showRoute}
+              onChange={(e) => setShowRoute(e.target.checked)}
+              disabled={activePois.length < 2}
+            />
+          }
+          label="Show route"
+          slotProps={{ typography: { variant: 'body2' } }}
+          sx={{ m: 0, gap: 0.5 }}
+        />
 
-      <OverviewMap pois={activePois} allPois={items} showRoute={showRoute} />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={autoPanEnabled}
+              onChange={(e) => setAutoPanEnabled(e.target.checked)}
+            />
+          }
+          label="Auto pan"
+          slotProps={{ typography: { variant: 'body2' } }}
+          sx={{ m: 0, gap: 0.5 }}
+        />
+      </FormGroup>
+      <OverviewMap pois={activePois} allPois={items} showRoute={showRoute} autoPanEnabled={autoPanEnabled} />
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
         <PoiReorderList

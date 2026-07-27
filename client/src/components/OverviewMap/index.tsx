@@ -10,13 +10,14 @@ import { useEffect, useMemo } from 'react';
 
 
 
-const PoiMarkers = ({ pois, allPois, route }: { pois: Poi[]; allPois: Poi[]; route: google.maps.DirectionsResult | null }) => {
+const PoiMarkers = ({ pois, allPois, route, autoPanEnabled }: { pois: Poi[]; allPois: Poi[]; route: google.maps.DirectionsResult | null, autoPanEnabled: boolean }) => {
   const map = useMap();
   const activeKeys = useMemo(() => new Set(pois.map((p) => p.key)), [pois]);
 
 
   useEffect(() => {
-    if (!map || !pois.length) return;
+    console.log('autoPan:', autoPanEnabled);
+    if (!map || !autoPanEnabled || !pois.length) return;
 
     const routeBounds = route?.routes[0]?.bounds;
     if (routeBounds) {
@@ -33,7 +34,7 @@ const PoiMarkers = ({ pois, allPois, route }: { pois: Poi[]; allPois: Poi[]; rou
     const bounds = new google.maps.LatLngBounds();
     pois.forEach((poi) => bounds.extend(poi.location));
     map.fitBounds(bounds, 40);
-  }, [map, pois, route]);
+  }, [autoPanEnabled, map, pois, route]);
 
   return (
     <>
@@ -59,8 +60,9 @@ type Props = {
   pois: Poi[],
   allPois: Poi[];
   showRoute: boolean
+  autoPanEnabled: boolean
 };
-export function OverviewMap({ pois, allPois, showRoute }: Props) {
+export function OverviewMap({ pois, allPois, showRoute, autoPanEnabled }: Props) {
   const { route } = useRoute(pois);
 
   return (
@@ -70,7 +72,7 @@ export function OverviewMap({ pois, allPois, showRoute }: Props) {
       defaultZoom={13}
       defaultCenter={{ lat: 34.0522, lng: -118.2437 }}
     >
-      <PoiMarkers pois={pois} allPois={allPois} route={showRoute ? route : null} />
+      <PoiMarkers pois={pois} allPois={allPois} route={showRoute ? route : null} autoPanEnabled={autoPanEnabled} />
 
       {/* https://visgl.github.io/react-google-maps/docs/api-reference/components/polyline */}
       {route && showRoute && (
