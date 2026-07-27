@@ -10,6 +10,22 @@ export const getTheme = (isDarkMode: boolean) =>
       },
     },
     components: {
+      MuiInputBase: {
+        styleOverrides: {
+          input: ({ theme }) => ({
+            '&:-webkit-autofill': {
+              // Dynamically pulls background color from the active theme
+              WebkitBoxShadow: `0 0 0 100px ${theme.palette.mode === 'dark' ? '#20202000' : '#ffffff'
+                } inset !important`,
+              // Dynamically adjusts text color
+              WebkitTextFillColor: `${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
+                } !important`,
+              caretColor: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+            },
+          }),
+        },
+      },
+
       MuiButtonBase: {
         defaultProps: {
           disableRipple: true,
