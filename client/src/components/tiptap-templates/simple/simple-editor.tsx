@@ -263,14 +263,6 @@ export function SimpleEditor({ noteId, setPins }: Props) {
         HTMLAttributes: { class: 'place-chip' },
         suggestion: placeSuggestion,
         onChipClick: (place) => setActivePlace(place),
-
-      }).extend({
-        addAttributes() {
-          return {
-            ...this.parent?.(),
-            secondaryText: { default: null },
-          }
-        },
       }),
       StarterKit.configure({
         horizontalRule: false,
@@ -410,7 +402,7 @@ export function SimpleEditor({ noteId, setPins }: Props) {
     function extractPlaces() {
       const ids: { id: string; label: string }[] = []
       editor!.state.doc.descendants((node) => {
-        if (node.type.name === 'mention' && node.attrs.id) {
+        if (node.type.name === 'placeChip' && node.attrs.id) {
           ids.push({ id: node.attrs.id, label: node.attrs.label })
         }
       })
