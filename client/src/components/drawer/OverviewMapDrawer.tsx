@@ -1,7 +1,8 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useDraggablePlaces } from '@/hooks/useDraggablePlaces';
 import { usePlaces } from '@/hooks/usePlace';
-import type { LocationPin, Place } from '@/types/places';
+import type { Place } from '@/types/places';
+import type { LocationPin } from "@/types/location-pin";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';

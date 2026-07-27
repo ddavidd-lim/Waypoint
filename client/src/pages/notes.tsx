@@ -8,7 +8,7 @@ import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
-import type { LocationPin } from '@/types/places';
+import type { LocationPin } from "@/types/location-pin";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import IconButton from '@mui/material/IconButton';

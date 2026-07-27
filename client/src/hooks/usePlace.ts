@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import type { LocationPin, Place } from '@/types/places'
+import type { Place } from '@/types/places'
+import type { LocationPin } from "@/types/location-pin"
 
 export function usePlaces(pins: LocationPin[]) {
   const queryKey = pins.map(p => p.id).join(',')
