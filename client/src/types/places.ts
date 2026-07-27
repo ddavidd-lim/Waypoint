@@ -1,6 +1,6 @@
-export type Place = { id: string; label: string };
+export type LocationPin = { id: string; label: string };
 
-export type Poi = {
+export type Place = {
   key: string,
   location: google.maps.LatLngLiteral,
   name: string,

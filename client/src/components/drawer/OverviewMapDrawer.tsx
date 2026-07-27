@@ -1,7 +1,7 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
-import { useDraggablePois } from '@/hooks/useDraggablePois';
-import { usePlacePois } from '@/hooks/usePlacePois';
-import type { Place, Poi } from '@/types/places';
+import { useDraggablePlaces } from '@/hooks/useDraggablePlaces';
+import { usePlaces } from '@/hooks/usePlace';
+import type { LocationPin, Place } from '@/types/places';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
 import { OverviewMap } from '../OverviewMap';
-import { PoiReorder } from './PoiReorder';
+import { PlaceReorder } from './PlaceReorder';
 
 
 const Drawer = styled(MuiDrawer)({
@@ -27,19 +27,19 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-const EMPTY: Poi[] = [];
+const EMPTY: Place[] = [];
 
 type Props = {
   handleDrawerClose: () => void;
   open: boolean;
-  places: Place[];
+  pins: LocationPin[];
 }
-export default function OverviewMapDrawer({ handleDrawerClose, open, places }: Props) {
+export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Props) {
   const theme = useTheme();
 
-  const { data: pois = EMPTY } = usePlacePois(places);
+  const { data: pois = EMPTY } = usePlaces(pins);
 
-  const { orderedPois, activeOrderedPois, excluded, setOrder, toggle } = useDraggablePois(pois);
+  const { orderedPlaces, activeOrderedPlaces, excluded, setOrder, toggle } = useDraggablePlaces(pois);
 
   const [showRoute, setShowRoute] = useState(true);
 
@@ -93,7 +93,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
               size="small"
               checked={showRoute}
               onChange={(e) => setShowRoute(e.target.checked)}
-              disabled={activeOrderedPois.length < 2}
+              disabled={activeOrderedPlaces.length < 2}
             />
           }
           label="Show route"
@@ -114,11 +114,11 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           sx={{ m: 0, gap: 0.5 }}
         />
       </FormGroup>
-      <OverviewMap pois={activeOrderedPois} allPois={orderedPois} showRoute={showRoute} autoPanEnabled={autoPanEnabled} />
+      <OverviewMap places={activeOrderedPlaces} allPlaces={orderedPlaces} showRoute={showRoute} autoPanEnabled={autoPanEnabled} />
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-        <PoiReorder
-          items={orderedPois}
+        <PlaceReorder
+          items={orderedPlaces}
           onOrderChange={setOrder}
           excluded={excluded}
           onToggle={toggle}

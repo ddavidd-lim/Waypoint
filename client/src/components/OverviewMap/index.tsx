@@ -1,18 +1,18 @@
 import { useRoute } from '@/hooks/useRoute';
-import type { Poi } from '@/types/places';
+import type { Place } from '@/types/places';
 import { Map, Polyline } from '@vis.gl/react-google-maps';
-import { PoiMarkers } from './PoiMarkers';
+import { PlaceMarkers } from './PlaceMarkers';
 
 // https://developers.google.com/codelabs/maps-platform/maps-platform-101-react-js
 
 type Props = {
-  pois: Poi[],
-  allPois: Poi[];
+  places: Place[],
+  allPlaces: Place[];
   showRoute: boolean
   autoPanEnabled: boolean
 };
-export function OverviewMap({ pois, allPois, showRoute, autoPanEnabled }: Props) {
-  const { route } = useRoute(pois);
+export function OverviewMap({ places, allPlaces, showRoute, autoPanEnabled }: Props) {
+  const { route } = useRoute(places);
 
   return (
     <Map
@@ -21,7 +21,7 @@ export function OverviewMap({ pois, allPois, showRoute, autoPanEnabled }: Props)
       defaultZoom={13}
       defaultCenter={{ lat: 34.0522, lng: -118.2437 }}
     >
-      <PoiMarkers pois={pois} allPois={allPois} route={showRoute ? route : null} autoPanEnabled={autoPanEnabled} />
+      <PlaceMarkers places={places} allPlaces={allPlaces} route={showRoute ? route : null} autoPanEnabled={autoPanEnabled} />
 
       {/* https://visgl.github.io/react-google-maps/docs/api-reference/components/polyline */}
       {route && showRoute && (

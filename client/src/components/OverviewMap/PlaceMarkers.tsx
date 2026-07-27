@@ -1,4 +1,4 @@
-import type { Poi } from '@/types/places';
+import type { Place } from '@/types/places';
 import { AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps';
 import { useEffect, useMemo } from 'react';
 
@@ -6,14 +6,20 @@ import { useEffect, useMemo } from 'react';
 // https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngBounds
 // https://developers.google.com/maps/documentation/javascript/reference/map#Map.panTo
 
-export const PoiMarkers = ({ pois, allPois, route, autoPanEnabled }: { pois: Poi[]; allPois: Poi[]; route: google.maps.DirectionsResult | null, autoPanEnabled: boolean }) => {
+type Props = {
+  places: Place[];
+  allPlaces: Place[];
+  route: google.maps.DirectionsResult | null;
+  autoPanEnabled: boolean
+}
+export const PlaceMarkers = ({ places, allPlaces, route, autoPanEnabled }: Props) => {
   const map = useMap();
-  const activeKeys = useMemo(() => new Set(pois.map((p) => p.key)), [pois]);
+  const activeKeys = useMemo(() => new Set(places.map((p) => p.key)), [places]);
 
 
   useEffect(() => {
     console.log('autoPan:', autoPanEnabled);
-    if (!map || !autoPanEnabled || !pois.length) return;
+    if (!map || !autoPanEnabled || !places.length) return;
 
     const routeBounds = route?.routes[0]?.bounds;
     if (routeBounds) {
@@ -21,24 +27,24 @@ export const PoiMarkers = ({ pois, allPois, route, autoPanEnabled }: { pois: Poi
       return;
     }
 
-    if (pois.length === 1) {
-      map.panTo(pois[0].location);
+    if (places.length === 1) {
+      map.panTo(places[0].location);
       map.setZoom(14);
       return;
     }
 
     const bounds = new google.maps.LatLngBounds();
-    pois.forEach((poi) => bounds.extend(poi.location));
+    places.forEach((place) => bounds.extend(place.location));
     map.fitBounds(bounds, 40);
-  }, [autoPanEnabled, map, pois, route]);
+  }, [autoPanEnabled, map, places, route]);
 
   return (
     <>
-      {allPois.map((poi) => {
-        const active = activeKeys.has(poi.key);
-        const index = pois.findIndex((p) => p.key === poi.key);
+      {allPlaces.map((place) => {
+        const active = activeKeys.has(place.key);
+        const index = places.findIndex((p) => p.key === place.key);
         return (
-          <AdvancedMarker key={poi.key} position={poi.location}>
+          <AdvancedMarker key={place.key} position={place.location}>
             <Pin
               background={active ? '#e81a1a' : '#c0c0c0'}
               borderColor={active ? '#a20b0b' : '#9e9e9e'}

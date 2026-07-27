@@ -1,17 +1,17 @@
-import type { Poi } from '@/types/places';
+import type { Place } from '@/types/places';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
-import { DraggablePoi } from './DraggablePoi';
+import { DraggablePlace } from './DraggablePlace';
 
 type Props = {
-  items: Poi[];
+  items: Place[];
   excluded: Set<string>;
   onToggle: (key: string) => void;
   onOrderChange: (keys: string[]) => void;
 }
 
-export function PoiReorder({ items, excluded, onToggle, onOrderChange }: Props) {
-  const [draft, setDraft] = useState<Poi[] | null>(null);
+export function PlaceReorder({ items, excluded, onToggle, onOrderChange }: Props) {
+  const [draft, setDraft] = useState<Place[] | null>(null);
   const visible = draft ?? items;
 
   const commit = () => {
@@ -20,9 +20,9 @@ export function PoiReorder({ items, excluded, onToggle, onOrderChange }: Props) 
   };
 
   let n = 0;
-  const rows = visible.map((poi) => {
-    const included = !excluded.has(poi.key);
-    return { poi, included, index: included ? ++n : undefined };
+  const rows = visible.map((place) => {
+    const included = !excluded.has(place.key);
+    return { place, included, index: included ? ++n : undefined };
   });
 
   return (
@@ -33,12 +33,12 @@ export function PoiReorder({ items, excluded, onToggle, onOrderChange }: Props) 
       as="ul"
       style={{ listStyle: 'none', margin: 0, padding: 0 }}
     >
-      {rows.map(({ poi, index }) => (
-        <DraggablePoi
-          key={poi.key}
+      {rows.map(({ place, index }) => (
+        <DraggablePlace
+          key={place.key}
           index={index}
-          poi={poi}
-          included={!excluded.has(poi.key)}
+          place={place}
+          included={!excluded.has(place.key)}
           onToggle={onToggle}
           onCommit={commit}
         />

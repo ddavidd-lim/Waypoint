@@ -1,22 +1,22 @@
-import type { Poi } from '@/types/places';
+import type { Place } from '@/types/places';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, Checkbox, Chip, Paper, Stack, Typography } from '@mui/material';
 import { Reorder, useDragControls } from 'framer-motion';
 
 type Props = {
-  poi: Poi;
+  place: Place;
   included: boolean;
   index?: number;
   onToggle: (key: string) => void;
   onCommit: () => void;
 }
 
-export function DraggablePoi({ poi, included, index, onToggle, onCommit }: Props) {
+export function DraggablePlace({ place, included, index, onToggle, onCommit }: Props) {
   const controls = useDragControls();
 
   return (
     <Reorder.Item
-      value={poi}
+      value={place}
       dragListener={false}
       dragControls={controls}
       onDragEnd={onCommit}
@@ -43,7 +43,7 @@ export function DraggablePoi({ poi, included, index, onToggle, onCommit }: Props
             <DragIndicatorIcon fontSize="small" color="disabled" />
           </Box>
 
-          <Checkbox checked={included} onChange={() => onToggle(poi.key)} />
+          <Checkbox checked={included} onChange={() => onToggle(place.key)} />
 
           <Stack direction={'row'} spacing={1} sx={{ alignItems: 'center' }}>
 
@@ -54,9 +54,9 @@ export function DraggablePoi({ poi, included, index, onToggle, onCommit }: Props
             }} />
 
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography noWrap>{poi.name}</Typography>
+              <Typography noWrap>{place.name}</Typography>
               <Typography variant="caption" color="text.secondary" noWrap>
-                {poi.city}, {poi.state}
+                {place.city}, {place.state}
               </Typography>
             </Box>
           </Stack>
