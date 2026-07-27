@@ -1,4 +1,5 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import { useOrderedPois } from '@/hooks/useOrderedPois';
 import { usePlacePois } from '@/hooks/usePlacePois';
 import type { Place } from '@/types/places';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -8,16 +9,12 @@ import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Typography from "@mui/material/Typography";
-import { OverviewMap } from '../OverviewMap';
-import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useCallback, useState } from 'react';
+import { OverviewMap } from '../OverviewMap';
+import { PoiReorderList } from './PoiRow';
+
 
 const Drawer = styled(MuiDrawer)({
   width: RIGHT_DRAWER_WIDTH,
@@ -29,11 +26,6 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-const TableHeaderCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: 600,
-  backgroundColor: theme.palette.background.default,
-  color: theme.palette.text.primary,
-}));
 
 type Props = {
   handleDrawerClose: () => void;
@@ -44,6 +36,19 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
   const theme = useTheme();
 
   const { data: pois = [] } = usePlacePois(places);
+  const { items, order, setOrder } = useOrderedPois(pois);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const handleToggle = useCallback((id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -52,15 +57,9 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor="right"
       open={open}
-      sx={{
-        width: RIGHT_DRAWER_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: RIGHT_DRAWER_WIDTH,
-          boxSizing: 'border-box',
-        },
-        pointerEvents: open ? 'auto' : 'none',
-      }}
+      onClose={handleDrawerClose}
+      ModalProps={{ keepMounted: true }}
+      sx={{ pointerEvents: open ? 'auto' : 'none' }}
     >
       <Stack
         direction="row"
@@ -85,31 +84,17 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
         </Box>
       </Stack>
 
-      <OverviewMap places={places} />
+      <OverviewMap pois={items} />
 
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ height: 1, overflow: 'auto' }}>
-          <Table size='small' stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Address</TableHeaderCell>
-                <TableHeaderCell>City, State</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pois.map(poi =>
-                <TableRow>
-                  <TableCell>{poi.name}</TableCell>
-                  <TableCell>{poi.address}</TableCell>
-                  <TableCell>{poi.city}, {poi.state}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-      </Paper>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+        <PoiReorderList
+          pois={pois}
+          order={order}
+          onOrderChange={setOrder}
+          selected={selected}
+          onToggle={handleToggle}
+        />
+      </Box>
     </Drawer>
   );
 }
