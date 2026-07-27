@@ -14,6 +14,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useCallback, useState } from 'react';
 import { OverviewMap } from '../OverviewMap';
 import { PoiReorderList } from './PoiRow';
+import { FormControlLabel, Switch } from '@mui/material';
 
 
 const Drawer = styled(MuiDrawer)({
@@ -37,7 +38,10 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
 
   const { data: pois = [] } = usePlacePois(places);
   const { items, order, setOrder } = useOrderedPois(pois);
+
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [showRoute, setShowRoute] = useState(false);
+
   const handleToggle = useCallback((id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -72,19 +76,31 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           justifyContent: 'start'
         }}
       >
-        <Box>
-          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
-          </IconButton>
-        </Box>
-        <Box>
+        <IconButton variant='noteMenu' onClick={handleDrawerClose}>
+          {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+        </IconButton>
+        <Box sx={{ width: 1, display: 'flex', justifyContent: 'space-between'}}>
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
             Overview Map
           </Typography>
+
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={showRoute}
+                onChange={(e) => setShowRoute(e.target.checked)}
+                disabled={items.length < 2}
+              />
+            }
+            label="Show Route"
+            slotProps={{ typography: { variant: 'body2' } }}
+            sx={{ mr: 0 }}
+          />
         </Box>
       </Stack>
 
-      <OverviewMap pois={items} />
+      <OverviewMap pois={items} showRoute={showRoute} />
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
         <PoiReorderList

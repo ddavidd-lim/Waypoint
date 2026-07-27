@@ -8,17 +8,19 @@ type Route =
   | { status: 'ok'; result: google.maps.DirectionsResult }
   | { status: 'error'; message: string };
 
-export function useRoute(pois: Poi[]) {
+export function useRoute(pois: Poi[], enabled = true) {
   const routesLib = useMapsLibrary('routes');
   const [routesCache, setRoutesCache] = useState<Record<string, Route>>({});
   const requested = useRef(new Set<string>());
 
   const cacheKey = pois.map((p) => p.key).join('|');
-  const enabled = Boolean(routesLib) && pois.length >= 2;
-  const route = enabled ? routesCache[cacheKey] : undefined;
+
+  const active = enabled && Boolean(routesLib) && pois.length >= 2;
+  const route = active ? routesCache[cacheKey] : undefined;
 
   useEffect(() => {
-    if (!routesLib || pois.length < 2) return;
+    if (!active || !routesLib) return;
+
     if (requested.current.has(cacheKey)) return;
 
     requested.current.add(cacheKey);
@@ -49,12 +51,12 @@ export function useRoute(pois: Poi[]) {
           },
         }));
       });
-  }, [routesLib, pois, cacheKey]);
+  }, [active, routesLib, pois, cacheKey]);
 
   return {
     route: route?.status === 'ok' ? route.result : null,
     error: route?.status === 'error' ? route.message : null,
-    loading: enabled && !route,
+    loading: active && !route,
     truncated: pois.length > MAX_STOPS,
   };
 }

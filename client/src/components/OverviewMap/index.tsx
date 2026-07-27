@@ -44,8 +44,11 @@ const PoiMarkers = ({ pois, route }: { pois: Poi[]; route: google.maps.Direction
   );
 };
 
-type Props = { pois: Poi[] };
-export function OverviewMap({ pois }: Props) {
+type Props = {
+  pois: Poi[],
+  showRoute: boolean
+};
+export function OverviewMap({ pois, showRoute }: Props) {
   const { route } = useRoute(pois);
 
   return (
@@ -58,7 +61,7 @@ export function OverviewMap({ pois }: Props) {
       <PoiMarkers pois={pois} route={route} />
 
       {/* https://visgl.github.io/react-google-maps/docs/api-reference/components/polyline */}
-      {route && (
+      {route && showRoute && (
         <Polyline
           path={route.routes[0].overview_path}
           strokeColor="#1a73e8"
