@@ -16,7 +16,7 @@ export function DraggablePlace({ place, included, index, onToggle, onCommit }: P
 
   return (
     <Reorder.Item
-      value={place}
+      value={place.key}
       dragListener={false}
       dragControls={controls}
       onDragEnd={onCommit}

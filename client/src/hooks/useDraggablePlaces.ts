@@ -5,10 +5,23 @@ function reorderByKeys(places: Place[], order: string[] | null): Place[] {
   if (!order) return places;
 
   const keyToPlace = new Map(places.map((p) => [p.key, p]));
-  const orderedPlaces = order.flatMap((k) => keyToPlace.get(k) ?? []);
-  const seen = new Set(order); // to exclude stray Places that are not ordered
+  const used = new Set<string>();
+  const orderedPlaces: Place[] = [];
 
-  return [...orderedPlaces, ...places.filter((p) => !seen.has(p.key))];
+  for (const key of order) {
+    if (used.has(key)) continue; // skip duplicate keys (e.g. from drag-over updates)
+    
+    const place = keyToPlace.get(key);
+
+    if (place) {
+      orderedPlaces.push(place);
+      used.add(key);
+    }
+  }
+
+  // append any places not present in `order` at all
+  const remaining = places.filter((p) => !used.has(p.key));
+  return [...orderedPlaces, ...remaining];
 }
 
 export function useDraggablePlaces(places: Place[]) {

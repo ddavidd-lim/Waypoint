@@ -11,25 +11,28 @@ type Props = {
 }
 
 export function PlaceReorder({ items, excluded, onToggle, onOrderChange }: Props) {
-  const [draft, setDraft] = useState<Place[] | null>(null);
-  const visible = draft ?? items;
+  const [draftKeys, setDraftKeys] = useState<string[] | null>(null);
+
+  const keyOrder = draftKeys ?? items.map((p) => p.key);
+  const placeLookup = new Map(items.map((p) => [p.key, p]));
 
   const commit = () => {
-    if (draft) onOrderChange(draft.map((p) => p.key));
-    setDraft(null);
+    if (draftKeys) onOrderChange(draftKeys);
+    setDraftKeys(null);
   };
 
   let n = 0;
-  const rows = visible.map((place) => {
-    const included = !excluded.has(place.key);
+  const rows = keyOrder.map((key) => {
+    const place = placeLookup.get(key)!;
+    const included = !excluded.has(key);
     return { place, included, index: included ? ++n : undefined };
   });
 
   return (
     <Reorder.Group
       axis="y"
-      values={visible}
-      onReorder={setDraft}
+      values={keyOrder}
+      onReorder={setDraftKeys}
       as="ul"
       style={{ listStyle: 'none', margin: 0, padding: 0 }}
     >
