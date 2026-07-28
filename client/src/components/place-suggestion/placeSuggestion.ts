@@ -1,11 +1,26 @@
-import type { SuggestionOptions } from '@tiptap/suggestion'
+import { isAnonymousUser } from '@/utils/isAnonymousUser'
+import { type Editor } from '@tiptap/core'
 import { ReactRenderer } from '@tiptap/react'
-import PlaceSuggestionList from './PlaceSuggestionList'
+import type { SuggestionOptions } from '@tiptap/suggestion'
+import { enqueueSnackbar } from 'notistack'
 import type { PlaceItem, SuggestionListRef } from './PlaceSuggestionList'
+import PlaceSuggestionList from './PlaceSuggestionList'
 import { updatePosition } from './updatePosition'
 
 // 1. Maintain a single session token instance out-of-scope or via a state container
 let currentSessionToken: google.maps.places.AutocompleteSessionToken | null = null;
+const ANONYMOUS_PLACE_CHIP_LIMIT = 5
+
+let maxChipsSnackbarShown = false;
+
+function countPlaceChips(editor: Editor): number {
+  let count = 0
+  editor.state.doc.descendants((node) => {
+    if (node.type.name === 'placeChip') count++
+  })
+  return count
+}
+
 
 export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   char: '@',
@@ -14,6 +29,19 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   debounce: 1000,
   decorationClass: 'place-suggestion',
   decorationEmptyClass: 'is-empty',
+
+  allow: ({ editor }) => {
+    const blocked = isAnonymousUser() && countPlaceChips(editor) >= ANONYMOUS_PLACE_CHIP_LIMIT;
+    if (!blocked) return true;
+
+    if (!maxChipsSnackbarShown) {
+      enqueueSnackbar("You've reached the maximum number of places for anonymous users. Sign in to add more.", { variant: 'warning' })
+      maxChipsSnackbarShown = true
+    }
+
+
+    return false;
+  },
 
   items: async ({ query, signal }): Promise<PlaceItem[]> => {
     if (!window.google?.maps?.places?.AutocompleteSuggestion) return []

@@ -234,6 +234,7 @@ export function SimpleEditor({ noteId, setPins }: Props) {
 
   const navigate = useNavigate();
 
+  // ------------------------- EDITOR ----------------------------
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
