@@ -155,7 +155,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             fullWidth
             variant="square"
             endIcon={<AddIcon />}
-            onClick={() => createMutation.mutateAsync()}
+            onClick={() => createMutation.mutate()}
             sx={{
               whiteSpace: 'nowrap',
             }}
