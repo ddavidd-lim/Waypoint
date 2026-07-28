@@ -54,6 +54,40 @@ body,
   font-family: "DM Sans", sans-serif;
 }
 
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 700;
+    color: var(--tt-theme-text);
+    line-height: 1.3;
+    margin-top: 0em;
+    margin-bottom: 0.5em;
+  }
+
+  // tighten the gap when a heading directly follows another heading
+  h1 + h2,
+  h1 + h3,
+  h2 + h3,
+  h2 + h4,
+  h3 + h4,
+  h3 + h5,
+  h4 + h5,
+  h4 + h6 {
+    margin-top: 0.5em;
+  }
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  > *:first-child {
+    margin-top: 0;
+  }
+}
+
 .simple-editor-wrapper {
   width: 100%;
   height: 100%;
