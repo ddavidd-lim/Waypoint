@@ -185,7 +185,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJywjU6WG_woAR3NrWwrEH_3M",
                 "label": "Griffith Observatory",
@@ -211,7 +211,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJ53JDjkvGwoAR2NMG6_1OnUg",
                 "label": "Grand Central Market",
@@ -358,7 +358,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJZQ9c8IW8woARN0gTXFiTqSU",
                 "label": "UCLA",
@@ -371,7 +371,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJcy95XujbwoARuFY3JsgRQl8",
                 "label": "Hangar 18 Indoor Climbing Gym - Arcadia",
@@ -384,7 +384,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJq5HEVIOMUocR1aaT_hDXIiQ",
                 "label": "In-N-Out Burger",
@@ -397,7 +397,7 @@
               "type": "text"
             },
             {
-              "type": "mention",
+              "type": "placeChip",
               "attrs": {
                 "id": "ChIJrw8HXQDbwoARj3T7MS-97h4",
                 "label": "Molly Tea (Arcadia)",
