@@ -82,7 +82,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       navigate(`/notes/${data.id}`)
     },
     onError: () => {
-      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error', autoHideDuration: 5000 });
+      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error' });
     },
   });
 

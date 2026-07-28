@@ -32,7 +32,7 @@ export default function App() {
 
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          <SnackbarProvider autoHideDuration={1500} maxSnack={4} action={(id) => (
+          <SnackbarProvider autoHideDuration={3000} maxSnack={4} action={(id) => (
             <IconButton variant='noteMenu' onClick={() => closeSnackbar(id)}>
               <CloseIcon fontSize="small" />
             </IconButton>

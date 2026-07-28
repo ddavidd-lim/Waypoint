@@ -18,7 +18,6 @@ export const PlaceMarkers = ({ places, allPlaces, route, autoPanEnabled }: Props
 
 
   useEffect(() => {
-    console.log('autoPan:', autoPanEnabled);
     if (!map || !autoPanEnabled || !places.length) return;
 
     const routeBounds = route?.routes[0]?.bounds;
