@@ -18,15 +18,17 @@ import { OverviewMap } from '../OverviewMap';
 import { PlaceReorder } from './PlaceReorder';
 
 
-const Drawer = styled(MuiDrawer)({
-  width: RIGHT_DRAWER_WIDTH,
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'fullScreen',
+})<{ fullScreen?: boolean }>(({ fullScreen }) => ({
+  width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
   flexShrink: 0,
   boxSizing: 'border-box',
   [`& .${drawerClasses.paper}`]: {
-    width: RIGHT_DRAWER_WIDTH,
+    width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
     boxSizing: 'border-box',
   },
-});
+}));
 
 const EMPTY: Place[] = [];
 
@@ -54,7 +56,11 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Pro
       anchor="right"
       open={open}
       onClose={handleDrawerClose}
-      ModalProps={{ keepMounted: true }}
+      elevation={0}
+      ModalProps={{
+        keepMounted: true
+      }}
+      fullScreen={isMobile}
       sx={{ pointerEvents: open ? 'auto' : 'none' }}
     >
       <Stack
