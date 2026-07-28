@@ -8,7 +8,7 @@
       },
       "content": [
         {
-          "text": "Waypoint is a rich text note-taking app that lets you write freely and pin the world to your words. Reference real geographical locations inline with no need for extra tabs or copy pasting addresses.",
+          "text": "Waypoint is a rich text note-taking app with integrated mapping tools. Reference real geographical locations inline with no need for extra tabs or copy pasting addresses.",
           "type": "text"
         }
       ]
@@ -16,117 +16,253 @@
     {
       "type": "heading",
       "attrs": {
-        "level": 2,
+        "level": 1,
         "textAlign": null
       },
       "content": [
         {
-          "text": "✨ Features at a glance",
+          "text": "Sample Itinerary",
           "type": "text"
         }
       ]
     },
     {
-      "type": "bulletList",
+      "type": "blockquote",
       "content": [
         {
-          "type": "listItem",
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "textAlign": null
+          },
           "content": [
             {
-              "type": "paragraph",
+              "text": "Day 1 - Saturday ",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
+          "content": [
+            {
+              "text": "9:00 AM - ",
+              "type": "text"
+            },
+            {
+              "type": "placeChip",
               "attrs": {
-                "textAlign": null
-              },
+                "id": "ChIJZQ9c8IW8woARN0gTXFiTqSU",
+                "lat": 34.0699182,
+                "lng": -118.4438495,
+                "label": "University of California, Los Angeles",
+                "address": "Los Angeles, CA 90095, USA",
+                "loading": false,
+                "secondaryText": "Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
               "content": [
                 {
-                  "text": "📍 ",
-                  "type": "text"
-                },
-                {
-                  "text": "Location chips",
-                  "type": "text",
-                  "marks": [
+                  "type": "paragraph",
+                  "attrs": {
+                    "textAlign": null
+                  },
+                  "content": [
                     {
-                      "type": "bold"
+                      "text": "meet the group at the sculpture garden entrance ",
+                      "type": "text"
                     }
                   ]
-                },
-                {
-                  "text": " — drop locations inline with ",
-                  "type": "text"
-                },
-                {
-                  "text": "@",
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ]
-                },
-                {
-                  "text": ", powered by Google Places autocomplete",
-                  "type": "text"
                 }
               ]
             }
           ]
         },
         {
-          "type": "listItem",
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
           "content": [
             {
-              "type": "paragraph",
+              "text": "12:30 PM - ",
+              "type": "text"
+            },
+            {
+              "type": "placeChip",
               "attrs": {
-                "textAlign": null
-              },
+                "id": "ChIJd3xCWU_GwoARBP7kXLY2T_E",
+                "lat": 34.0523392,
+                "lng": -118.2395052,
+                "label": "Little Tokyo",
+                "address": "Little Tokyo, Los Angeles, CA, USA",
+                "loading": false,
+                "secondaryText": "Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
               "content": [
                 {
-                  "text": "🗺️ ",
-                  "type": "text"
-                },
-                {
-                  "text": "Live Overview map",
-                  "type": "text",
-                  "marks": [
+                  "type": "paragraph",
+                  "attrs": {
+                    "textAlign": null
+                  },
+                  "content": [
                     {
-                      "type": "bold"
+                      "text": "Check out food, shopping center, games",
+                      "type": "text"
                     }
                   ]
-                },
-                {
-                  "text": " — all chips in a note appear as pins on a live side panel map",
-                  "type": "text"
                 }
               ]
             }
           ]
         },
         {
-          "type": "listItem",
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
           "content": [
             {
-              "type": "paragraph",
+              "text": "6:00 PM - ",
+              "type": "text"
+            },
+            {
+              "type": "placeChip",
               "attrs": {
-                "textAlign": null
-              },
+                "id": "ChIJ7Rxz_unbwoAR6iIgY8AkZ0Q",
+                "lat": 34.1403793,
+                "lng": -118.0369745,
+                "label": "Hilton Arcadia Los Angeles",
+                "address": "123 W Huntington Dr, Arcadia, CA 91007, USA",
+                "loading": false,
+                "secondaryText": "West Huntington Drive, Arcadia, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "textAlign": null
+          },
+          "content": [
+            {
+              "text": "Day 2 — Sunday",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
+          "content": [
+            {
+              "text": "10:00 AM - ",
+              "type": "text"
+            },
+            {
+              "type": "placeChip",
+              "attrs": {
+                "id": "ChIJc1xhAk3bwoARBBlfKQzXKLM",
+                "lat": 34.1290452,
+                "lng": -118.1145242,
+                "label": "The Huntington Library, Art Museum, and Botanical Gardens",
+                "address": "1151 Oxford Rd, San Marino, CA 91108, USA",
+                "loading": false,
+                "secondaryText": "Oxford Road, San Marino, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
               "content": [
                 {
-                  "text": "✏️ ",
-                  "type": "text"
-                },
-                {
-                  "text": "Rich text editor",
-                  "type": "text",
-                  "marks": [
+                  "type": "paragraph",
+                  "attrs": {
+                    "textAlign": null
+                  },
+                  "content": [
                     {
-                      "type": "bold"
+                      "text": "Lunch inside ",
+                      "type": "text"
                     }
                   ]
-                },
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
+          "content": [
+            {
+              "text": "5:00 PM - ",
+              "type": "text"
+            },
+            {
+              "type": "placeChip",
+              "attrs": {
+                "id": "ChIJZQ9c8IW8woARN0gTXFiTqSU",
+                "lat": null,
+                "lng": null,
+                "label": "UCLA",
+                "address": null,
+                "loading": true,
+                "secondaryText": "Los Angeles, CA, USA",
+                "mentionSuggestionChar": "@"
+              }
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "content": [
                 {
-                  "text": " — full formatting toolkit with markdown shortcuts and keyboard support",
-                  "type": "text"
+                  "type": "paragraph",
+                  "attrs": {
+                    "textAlign": null
+                  },
+                  "content": [
+                    {
+                      "text": "Drive back",
+                      "type": "text"
+                    }
+                  ]
                 }
               ]
             }
@@ -140,13 +276,36 @@
     {
       "type": "heading",
       "attrs": {
+        "level": 1,
+        "textAlign": null
+      },
+      "content": [
+        {
+          "text": "Features",
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
         "level": 3,
         "textAlign": null
       },
       "content": [
         {
-          "text": "📍 Location chips",
-          "type": "text"
+          "text": "Location pins",
+          "type": "text",
+          "marks": [
+            {
+              "type": "underline"
+            }
+          ]
         }
       ]
     },
@@ -157,82 +316,8 @@
       },
       "content": [
         {
-          "text": "As you write, type ‘@’ to search for any location by name or address. Google Places autocomplete handles the rest.",
+          "text": "As you write, type '@' to search for any location by name or address. Google Places autocomplete handles the rest.",
           "type": "text"
-        }
-      ]
-    },
-    {
-      "type": "blockquote",
-      "content": [
-        {
-          "type": "paragraph",
-          "attrs": {
-            "textAlign": null
-          },
-          "content": [
-            {
-              "text": "\"Thinking about checking out",
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ]
-            },
-            {
-              "text": " ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJywjU6WG_woAR3NrWwrEH_3M",
-                "label": "Griffith Observatory",
-                "secondaryText": "East Observatory Road, Los Angeles, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " ",
-              "type": "text"
-            },
-            {
-              "text": "this weekend, maybe grab lunch near",
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ]
-            },
-            {
-              "text": " ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJ53JDjkvGwoAR2NMG6_1OnUg",
-                "label": "Grand Central Market",
-                "secondaryText": "South Broadway, Los Angeles, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " ",
-              "type": "text"
-            },
-            {
-              "text": "after.\"",
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ]
-            }
-          ]
         }
       ]
     },
@@ -249,9 +334,6 @@
       ]
     },
     {
-      "type": "horizontalRule"
-    },
-    {
       "type": "heading",
       "attrs": {
         "level": 3,
@@ -259,77 +341,27 @@
       },
       "content": [
         {
-          "text": "🗺️ The overview map",
-          "type": "text"
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      },
-      "content": [
-        {
-          "text": "Every location chip you drop into a note automatically appears in the ",
-          "type": "text"
-        },
-        {
-          "text": "map panel",
+          "text": "Live Overview map",
           "type": "text",
           "marks": [
             {
-              "type": "bold"
+              "type": "underline"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
         {
-          "text": " on the right. ",
+          "text": "All pins in a note appear as pins on a live side panel map",
           "type": "text"
         }
       ]
-    },
-    {
-      "type": "bulletList",
-      "content": [
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "Each location is listed in a table with its address, city, and state",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": null
-              },
-              "content": [
-                {
-                  "text": "The map dynamically pans to fit all pins whenever one is added or removed",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "horizontalRule"
     },
     {
       "type": "heading",
@@ -339,75 +371,11 @@
       },
       "content": [
         {
-          "text": "Try it yourself",
-          "type": "text"
-        }
-      ]
-    },
-    {
-      "type": "blockquote",
-      "content": [
-        {
-          "type": "paragraph",
-          "attrs": {
-            "textAlign": null
-          },
-          "content": [
+          "text": "Route between chips",
+          "type": "text",
+          "marks": [
             {
-              "text": "I want to go to ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJZQ9c8IW8woARN0gTXFiTqSU",
-                "label": "UCLA",
-                "secondaryText": "Los Angeles, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " tomorrow to hang out with some friends. Then I'll need to drive to ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJcy95XujbwoARuFY3JsgRQl8",
-                "label": "Hangar 18 Indoor Climbing Gym - Arcadia",
-                "secondaryText": "North Santa Anita Avenue, Arcadia, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " to climb with David. We might grab ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJq5HEVIOMUocR1aaT_hDXIiQ",
-                "label": "In-N-Out Burger",
-                "secondaryText": "North Santa Anita Avenue, Arcadia, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " after that too! Mayhaps get a sweet treat at ",
-              "type": "text"
-            },
-            {
-              "type": "placeChip",
-              "attrs": {
-                "id": "ChIJrw8HXQDbwoARj3T7MS-97h4",
-                "label": "Molly Tea (Arcadia)",
-                "secondaryText": "South Baldwin Avenue, Arcadia, CA, USA",
-                "mentionSuggestionChar": "@"
-              }
-            },
-            {
-              "text": " as well!",
-              "type": "text"
+              "type": "underline"
             }
           ]
         }
@@ -417,20 +385,13 @@
       "type": "paragraph",
       "attrs": {
         "textAlign": null
-      }
-    },
-    {
-      "type": "heading",
-      "attrs": {
-        "level": 3,
-        "textAlign": null
-      }
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      }
+      },
+      "content": [
+        {
+          "text": "Turn any sequence of locations into a route. Reorder and adjust visibility to plan routes effectively",
+          "type": "text"
+        }
+      ]
     }
   ]
 }
