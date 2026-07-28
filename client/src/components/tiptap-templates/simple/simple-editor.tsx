@@ -83,7 +83,7 @@ import type { SaveState } from "@/components/SaveIndicator/types"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
-import type { Place } from "@/types/places"
+import type { LocationPin } from "@/types/location-pin"
 import Box from "@mui/material/Box"
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
@@ -203,10 +203,10 @@ const MobileToolbarContent = ({
 
 type Props = {
   noteId?: string;
-  setPlaces: Dispatch<SetStateAction<Place[]>>
+  setPins: Dispatch<SetStateAction<LocationPin[]>>
 }
 
-export function SimpleEditor({ noteId, setPlaces }: Props) {
+export function SimpleEditor({ noteId, setPins }: Props) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -234,6 +234,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
 
   const navigate = useNavigate();
 
+  // ------------------------- EDITOR ----------------------------
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -263,14 +264,6 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
         HTMLAttributes: { class: 'place-chip' },
         suggestion: placeSuggestion,
         onChipClick: (place) => setActivePlace(place),
-
-      }).extend({
-        addAttributes() {
-          return {
-            ...this.parent?.(),
-            secondaryText: { default: null },
-          }
-        },
       }),
       StarterKit.configure({
         horizontalRule: false,
@@ -410,12 +403,12 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
     function extractPlaces() {
       const ids: { id: string; label: string }[] = []
       editor!.state.doc.descendants((node) => {
-        if (node.type.name === 'mention' && node.attrs.id) {
+        if (node.type.name === 'placeChip' && node.attrs.id) {
           ids.push({ id: node.attrs.id, label: node.attrs.label })
         }
       })
 
-      setPlaces((prev) => {
+      setPins((prev) => {
         const newKey = ids.map(i => i.id).join(',')
         const prevKey = prev.map(i => i.id).join(',')
         if (newKey === prevKey) return prev;
@@ -429,7 +422,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
     return () => {
       editor.off('update', extractPlaces);
     }
-  }, [editor, setPlaces])
+  }, [editor, setPins])
 
   return (
     <div className="simple-editor-wrapper">

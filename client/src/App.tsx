@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { ThemeProvider } from '@mui/material/styles';
 import {
-  QueryClient,
   QueryClientProvider
 } from '@tanstack/react-query';
 import { APIProvider } from '@vis.gl/react-google-maps';
@@ -15,9 +14,9 @@ import { AuthProvider } from './context/auth/AuthProvider';
 import { useDarkMode } from './context/theme-toggle/dark-mode-context';
 import { router } from './routers';
 import { getTheme } from './themes/themes';
+import { queryClient } from './lib/queryClient';
 
 
-const queryClient = new QueryClient();
 
 export default function App() {
   const { isDarkMode } = useDarkMode();
@@ -33,7 +32,7 @@ export default function App() {
 
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          <SnackbarProvider autoHideDuration={1500} maxSnack={4} action={(id) => (
+          <SnackbarProvider autoHideDuration={3000} maxSnack={4} action={(id) => (
             <IconButton variant='noteMenu' onClick={() => closeSnackbar(id)}>
               <CloseIcon fontSize="small" />
             </IconButton>

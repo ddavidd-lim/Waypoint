@@ -1,49 +1,52 @@
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
-import { usePlacePois } from '@/hooks/usePlacePois';
+import { useDraggablePlaces } from '@/hooks/useDraggablePlaces';
+import { usePlaces } from '@/hooks/usePlace';
 import type { Place } from '@/types/places';
+import type { LocationPin } from "@/types/location-pin";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import Box from "@mui/material/Box";
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Typography from "@mui/material/Typography";
-import { OverviewMap } from '../OverviewMap';
-import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useState } from 'react';
+import { OverviewMap } from '../OverviewMap';
+import { PlaceReorder } from './PlaceReorder';
 
-const Drawer = styled(MuiDrawer)({
-  width: RIGHT_DRAWER_WIDTH,
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'fullScreen',
+})<{ fullScreen?: boolean }>(({ fullScreen }) => ({
+  width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
   flexShrink: 0,
   boxSizing: 'border-box',
   [`& .${drawerClasses.paper}`]: {
-    width: RIGHT_DRAWER_WIDTH,
+    width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
     boxSizing: 'border-box',
   },
-});
-
-const TableHeaderCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: 600,
-  backgroundColor: theme.palette.background.default,
-  color: theme.palette.text.primary,
 }));
+
+const EMPTY: Place[] = [];
 
 type Props = {
   handleDrawerClose: () => void;
   open: boolean;
-  places: Place[];
+  pins: LocationPin[];
 }
-export default function OverviewMapDrawer({ handleDrawerClose, open, places }: Props) {
+export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Props) {
   const theme = useTheme();
 
-  const { data: pois = [] } = usePlacePois(places);
+  const { data: pois = EMPTY } = usePlaces(pins);
+
+  const { orderedPlaces, activeOrderedPlaces, excluded, setOrder, toggle } = useDraggablePlaces(pois);
+
+  const [showRoute, setShowRoute] = useState(true);
+
+  const [autoPanEnabled, setAutoPanEnabled] = useState(true);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -52,15 +55,13 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor="right"
       open={open}
-      sx={{
-        width: RIGHT_DRAWER_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: RIGHT_DRAWER_WIDTH,
-          boxSizing: 'border-box',
-        },
-        pointerEvents: open ? 'auto' : 'none',
+      onClose={handleDrawerClose}
+      elevation={0}
+      ModalProps={{
+        keepMounted: true
       }}
+      fullScreen={isMobile}
+      sx={{ pointerEvents: open ? 'auto' : 'none' }}
     >
       <Stack
         direction="row"
@@ -73,43 +74,63 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           justifyContent: 'start'
         }}
       >
-        <Box>
-          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
-          </IconButton>
-        </Box>
-        <Box>
+        <IconButton variant='noteMenu' onClick={handleDrawerClose}>
+          {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+        </IconButton>
+        <Box sx={{ width: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
             Overview Map
           </Typography>
         </Box>
       </Stack>
+      <FormGroup
+        row
+        sx={{
+          px: 2,
+          py: 0.5,
+          gap: 2,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'action.hover',
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={showRoute}
+              onChange={(e) => setShowRoute(e.target.checked)}
+              disabled={activeOrderedPlaces.length < 2}
+            />
+          }
+          label="Show route"
+          slotProps={{ typography: { variant: 'body2' } }}
+          sx={{ m: 0, gap: 0.5 }}
+        />
 
-      <OverviewMap places={places} />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={autoPanEnabled}
+              onChange={(e) => setAutoPanEnabled(e.target.checked)}
+            />
+          }
+          label="Auto pan"
+          slotProps={{ typography: { variant: 'body2' } }}
+          sx={{ m: 0, gap: 0.5 }}
+        />
+      </FormGroup>
+      <OverviewMap places={activeOrderedPlaces} allPlaces={orderedPlaces} showRoute={showRoute} autoPanEnabled={autoPanEnabled} />
 
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ height: 300, overflow: 'auto' }}>
-          <Table size='small' stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Address</TableHeaderCell>
-                <TableHeaderCell>City, State</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pois.map(poi =>
-                <TableRow>
-                  <TableCell>{poi.name}</TableCell>
-                  <TableCell>{poi.address}</TableCell>
-                  <TableCell>{poi.city}, {poi.state}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-      </Paper>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+        <PlaceReorder
+          items={orderedPlaces}
+          onOrderChange={setOrder}
+          excluded={excluded}
+          onToggle={toggle}
+        />
+      </Box>
     </Drawer>
   );
 }

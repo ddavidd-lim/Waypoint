@@ -1,61 +1,37 @@
-import { usePlacePois } from '@/hooks/usePlacePois';
-import type { Place, Poi } from '@/types/places';
-import { AdvancedMarker, Map, Pin, useMap } from '@vis.gl/react-google-maps';
-import { useEffect } from 'react';
+import { useRoute } from '@/hooks/useRoute';
+import type { Place } from '@/types/places';
+import { Map, Polyline } from '@vis.gl/react-google-maps';
+import { PlaceMarkers } from './PlaceMarkers';
 
 // https://developers.google.com/codelabs/maps-platform/maps-platform-101-react-js
-// https://developers.google.com/maps/documentation/javascript/reference/map#Map.fitBounds
-// https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngBounds
-// https://developers.google.com/maps/documentation/javascript/reference/map#Map.panTo
-
-
-
-const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
-  const map = useMap()
-
-  useEffect(() => {
-    if (!map || !pois.length) return
-
-    if (pois.length === 1) {
-      map.panTo(pois[0].location)
-      map.setZoom(14)
-      return
-    }
-
-    const bounds = new google.maps.LatLngBounds()
-    pois.forEach(poi => bounds.extend(poi.location))
-    map.fitBounds(bounds, 40) // 40px padding
-  }, [map, pois])
-
-
-  return (
-    <>
-      {pois.map((poi: Poi) => (
-        <AdvancedMarker
-          key={poi.key}
-          position={poi.location}>
-          {/* Customize with background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'}  */}
-          <Pin />
-        </AdvancedMarker>
-      ))}
-    </>
-  );
-};
 
 type Props = {
-  places: Place[]
-}
-export function OverviewMap({ places }: Props) {
-  const { data: pois = [] } = usePlacePois(places);
+  places: Place[],
+  allPlaces: Place[];
+  showRoute: boolean
+  autoPanEnabled: boolean
+};
+export function OverviewMap({ places, allPlaces, showRoute, autoPanEnabled }: Props) {
+  const { route } = useRoute(places);
 
   return (
     <Map
-      style={{ width: '100%', height: '300px', flexShrink: 0 }}
+      style={{ width: '100%', height: '250px', flexShrink: 0 }}
       mapId='DEMO_MAP_ID'
       defaultZoom={13}
       defaultCenter={{ lat: 34.0522, lng: -118.2437 }}
     >
-      {<PoiMarkers pois={pois}></PoiMarkers>}
+      <PlaceMarkers places={places} allPlaces={allPlaces} route={showRoute ? route : null} autoPanEnabled={autoPanEnabled} />
+
+      {/* https://visgl.github.io/react-google-maps/docs/api-reference/components/polyline */}
+      {route && showRoute && (
+        <Polyline
+          path={route.routes[0].overview_path}
+          strokeColor="#241ae8"
+          strokeWeight={5}
+          strokeOpacity={0.8}
+        />
+      )}
     </Map>
   )
 }

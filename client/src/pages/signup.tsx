@@ -67,7 +67,7 @@ export default function Signup() {
       }
       setSubmitError(null);
 
-      enqueueSnackbar('Account created successfully!', { variant: 'success', autoHideDuration: 5000 });
+      enqueueSnackbar('Account created successfully!', { variant: 'success' });
 
       navigate('/');
     },

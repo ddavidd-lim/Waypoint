@@ -2,13 +2,13 @@
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import NotesDrawer from '@/components/drawer';
+import NotesDrawer from '@/components/drawer/NotesDrawer';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
-import type { Place } from '@/types/places';
+import type { LocationPin } from "@/types/location-pin";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import IconButton from '@mui/material/IconButton';
@@ -39,7 +39,7 @@ export default function Notes() {
 
   const navigate = useNavigate();
 
-  const [places, setPlaces] = useState<Place[]>([]);
+  const [pin, setPins] = useState<LocationPin[]>([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -170,7 +170,7 @@ export default function Notes() {
             <KeyboardDoubleArrowRightIcon />
           </IconButton>
 
-          <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
+          <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPins={setPins} />
 
           <IconButton
             variant='noteMenu'
@@ -192,7 +192,7 @@ export default function Notes() {
       </Main>
 
       <OverviewMapDrawer
-        places={places}
+        pins={pin}
         open={openRightDrawer}
         handleDrawerClose={handleRightDrawerClose}
       />

@@ -82,7 +82,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
       navigate(`/notes/${data.id}`)
     },
     onError: () => {
-      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error', autoHideDuration: 5000 });
+      enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error' });
     },
   });
 
@@ -118,6 +118,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
       open={open}
+      elevation={0}
       sx={{
         width: LEFT_DRAWER_WIDTH,
         flexShrink: 0,
@@ -155,7 +156,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             fullWidth
             variant="square"
             endIcon={<AddIcon />}
-            onClick={() => createMutation.mutateAsync()}
+            onClick={() => createMutation.mutate()}
             sx={{
               whiteSpace: 'nowrap',
             }}
