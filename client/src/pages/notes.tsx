@@ -2,7 +2,7 @@
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import NotesDrawer from '@/components/drawer';
+import NotesDrawer from '@/components/drawer/NotesDrawer';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
