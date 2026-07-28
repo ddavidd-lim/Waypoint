@@ -1,14 +1,46 @@
 import { createTheme, alpha } from '@mui/material/styles';
 
+export const journalColors = {
+  accent: {
+    light: '#df6c08',
+    dark: '#d87621',
+  },
+  destructive: {
+    light: '#B3402C',
+    dark: '#C9583F',
+  },
+  pin: {
+    active: { light: '#B5651D', dark: '#D98C4A' },
+    inactive: { light: '#C7BCA8', dark: '#4A4335' },
+  },
+};
+
 export const getTheme = (isDarkMode: boolean) =>
   createTheme({
     palette: {
       mode: isDarkMode ? 'dark' : 'light',
       background: {
-        default: isDarkMode ? '#191919' : '#fafafa',
+        default: isDarkMode ? '#1C1A17' : '#FAF7F2',
         paper: isDarkMode ? '#202020' : '#ffffff',
       },
+      text: {
+        primary: isDarkMode ? '#EDE8E0' : '#2E2A25',
+        secondary: isDarkMode ? '#A39A8C' : '#8A8175',
+      },
+      divider: isDarkMode ? '#3A342C' : '#E3DBCC',
+      primary: {
+        main: isDarkMode ? journalColors.accent.dark : journalColors.accent.light,
+        contrastText: isDarkMode ? '#1C1A17' : '#FFFFFF',
+      },
+      error: {
+        main: isDarkMode ? journalColors.destructive.dark : journalColors.destructive.light,
+      },
+      action: {
+        selected: isDarkMode ? journalColors.accent.dark : journalColors.accent.light,
+        hover: isDarkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(46, 42, 37, 0.05)',
+      },
     },
+
     components: {
       MuiInputBase: {
         styleOverrides: {
