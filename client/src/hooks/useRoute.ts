@@ -1,8 +1,8 @@
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useEffect, useRef, useState } from 'react';
 import type { Place } from '@/types/places';
+import { MAX_STOPS } from '@/constants.ts/maxLimits';
 
-const MAX_STOPS = 27;
 
 type Route =
   | { status: 'ok'; result: google.maps.DirectionsResult }

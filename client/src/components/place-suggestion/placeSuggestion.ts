@@ -6,10 +6,10 @@ import { enqueueSnackbar } from 'notistack'
 import type { PlaceItem, SuggestionListRef } from './PlaceSuggestionList'
 import PlaceSuggestionList from './PlaceSuggestionList'
 import { updatePosition } from './updatePosition'
+import { GUEST_PIN_LIMIT } from '@/constants.ts/maxLimits'
 
 // 1. Maintain a single session token instance out-of-scope or via a state container
 let currentSessionToken: google.maps.places.AutocompleteSessionToken | null = null;
-const ANONYMOUS_PLACE_CHIP_LIMIT = 5
 
 let maxChipsSnackbarShown = false;
 
@@ -31,7 +31,7 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   decorationEmptyClass: 'is-empty',
 
   allow: ({ editor }) => {
-    const blocked = isAnonymousUser() && countPlaceChips(editor) >= ANONYMOUS_PLACE_CHIP_LIMIT;
+    const blocked = isAnonymousUser() && countPlaceChips(editor) >= GUEST_PIN_LIMIT;
     if (!blocked) return true;
 
     if (!maxChipsSnackbarShown) {
