@@ -11,17 +11,16 @@ export function showSignInSnackbar(): SnackbarKey {
     action: (id) => (
       <Stack direction="row" spacing={1}>
         <Button
-          variant='square'
           color="inherit"
           size="small"
           onClick={() => {
-            router.navigate('/signup')
+            router.navigate('/signup');
             closeSnackbar(id);
           }}
         >
           Sign In
         </Button>
-        <IconButton size="small" onClick={() => closeSnackbar(id)}>
+        <IconButton color='inherit' size="small" onClick={() => closeSnackbar(id)} sx={{ color: '#ffffff' }}>
           <CloseIcon fontSize="small" />
         </IconButton>
       </Stack>
