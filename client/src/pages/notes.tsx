@@ -9,10 +9,6 @@ import { createNote } from '@/repositories/notes';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
 import type { LocationPin } from "@/types/location-pin";
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import {
   useMutation,
@@ -20,35 +16,38 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
+import Header from '@/components/Header';
+import { Main } from '@/components/main';
+import type { SaveState } from '@/components/SaveIndicator/types';
 import { AuthContext } from '@/context/auth/authContext';
 import { showSignInSnackbar } from '@/utils/showSignInSnackbar';
+import { Box } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { closeSnackbar } from 'notistack';
-import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
-import { Main } from '@/components/main';
 import { useNavigate, useParams } from 'react-router-dom';
+import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
 
 
 export default function Notes() {
   const queryClient = useQueryClient();
+  const { id: selectedNoteId } = useParams<{ id: string; }>();
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const { data: user } = useUser();
 
   const isCreating = useRef(false);
 
-  const { id: selectedNoteId } = useParams<{ id: string }>();
-
-  const navigate = useNavigate();
-
   const [pin, setPins] = useState<LocationPin[]>([]);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [saveState, setSaveState] = useState<SaveState>('idle');
 
   const handleSelectCurrentNoteId = useCallback((noteId: string) => {
     navigate(`/notes/${noteId}`);
   }, []);
 
-  const { user: authUser } = useContext(AuthContext)
+  const { user: authUser } = useContext(AuthContext);
 
   const { data: notes, isSuccess } = useQuery<Note[]>({
     queryKey: ['notes', user?.id],
@@ -140,6 +139,9 @@ export default function Notes() {
     setOpenRightDrawer(false);
   };
 
+  // Note to pass to Header
+  const note = notes?.find((n) => n.id === currentNoteId);
+
   return (
     <>
       <NotesDrawer
@@ -150,45 +152,12 @@ export default function Notes() {
       />
 
       <Main openLeft={openLeftDrawer} openRight={openRightDrawer}>
-        <Stack direction={'row'} sx={{ height: 1, width: 1 }}>
+        <Box sx={{ height: 1, width: 1 }}>
 
-          <IconButton
-            variant='noteMenu'
-            color="inherit"
-            onClick={handleLeftDrawerOpen}
-            sx={{
-              position: 'absolute',
-              left: { xs: 0, sm: 8 },
-              top: { xs: '50%', sm: 50 },
-              zIndex: 1300,
-              opacity: openLeftDrawer ? 0 : 1,
-              pointerEvents: openLeftDrawer ? 'none' : 'auto',
-              transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
-              transitionDelay: openLeftDrawer ? '0ms' : '225ms',
-            }}
-          >
-            <KeyboardDoubleArrowRightIcon />
-          </IconButton>
+          <Header saveState={saveState} openLeftDrawer={openLeftDrawer} openRightDrawer={openRightDrawer} handleLeftDrawerOpen={handleLeftDrawerOpen} handleRightDrawerOpen={handleRightDrawerOpen} selectedNote={note} />
 
-          <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPins={setPins} />
-
-          <IconButton
-            variant='noteMenu'
-            onClick={handleRightDrawerOpen}
-            sx={{
-              position: 'absolute',
-              right: { xs: 0, sm: 8 },
-              top: { xs: '50%', sm: 50 },
-              zIndex: 1300,
-              opacity: openRightDrawer ? 0 : 1,
-              pointerEvents: openRightDrawer ? 'none' : 'auto',
-              transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
-              transitionDelay: openRightDrawer ? '0ms' : '225ms',
-            }}
-          >
-            <KeyboardDoubleArrowLeftIcon />
-          </IconButton>
-        </Stack>
+          <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPins={setPins} setSaveState={setSaveState} />
+        </Box>
       </Main>
 
       <OverviewMapDrawer
