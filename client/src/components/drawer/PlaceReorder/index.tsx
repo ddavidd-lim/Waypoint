@@ -8,7 +8,7 @@ type Props = {
   excluded: Set<string>;
   onToggle: (key: string) => void;
   onOrderChange: (keys: string[]) => void;
-}
+};
 
 export function PlaceReorder({ items, excluded, onToggle, onOrderChange }: Props) {
   const [draftKeys, setDraftKeys] = useState<string[] | null>(null);
