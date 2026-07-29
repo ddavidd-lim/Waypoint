@@ -14,10 +14,10 @@ export function SaveIndicator({ state, updatedAt }: Props) {
   return (
     <Tooltip title={`Last updated: ${updatedAt}`} placement="top" arrow enterDelay={500} leaveDelay={200}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        {state === 'saving' && <CircularProgress size={16} />}
-        {state === 'saved' || state === 'idle' && (
+        {state === 'saving' && <CircularProgress size={20} color='info'/>}
+        {state === 'saved'  && (
           <Fade in>
-            <CheckCircleOutlineOutlinedIcon sx={{ fontSize: 16, color: 'success.main' }} />
+            <CheckCircleOutlineOutlinedIcon sx={{ fontSize: 20, color: 'success.main' }} />
           </Fade>
         )}
       </Box>
