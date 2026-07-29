@@ -66,7 +66,6 @@ import { useIsBreakpoint } from "@/hooks/tip-tap-hooks/use-is-breakpoint"
 import { useWindowSize } from "@/hooks/tip-tap-hooks/use-window-size"
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
@@ -78,7 +77,6 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
-import { SaveIndicator } from "@/components/SaveIndicator"
 import type { SaveState } from "@/components/SaveIndicator/types"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
@@ -164,10 +162,6 @@ const MainToolbarContent = ({
       <Spacer />
 
       {isMobile && <ToolbarSeparator />}
-
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
     </>
   )
 }
@@ -204,9 +198,10 @@ const MobileToolbarContent = ({
 type Props = {
   noteId?: string;
   setPins: Dispatch<SetStateAction<LocationPin[]>>
+  setSaveState: Dispatch<SetStateAction<SaveState>>
 }
 
-export function SimpleEditor({ noteId, setPins }: Props) {
+export function SimpleEditor({ noteId, setPins, setSaveState }: Props) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -225,7 +220,6 @@ export function SimpleEditor({ noteId, setPins }: Props) {
 
   const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
 
-  const [saveState, setSaveState] = useState<SaveState>('idle');
 
   const titleRef = useRef(title);
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -345,7 +339,7 @@ export function SimpleEditor({ noteId, setPins }: Props) {
         old ? { ...old, title: currentTitle, content, updated_at: new Date().toISOString() } : old
       );
     }, 1000);
-  }, [editor, queryClient]);
+  }, [editor, queryClient, setSaveState]);
 
   // Register editor listener once
   useEffect(() => {
@@ -488,7 +482,6 @@ export function SimpleEditor({ noteId, setPins }: Props) {
                 : dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
             <Stack direction={'row'} sx={{ gap: 1, alignItems: 'center' }}>
-              <SaveIndicator state={saveState} updatedAt={dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')} />
               <MuiTypography variant={'subtitle2'}>
                 Updated: {isMobile
                   ? dayjs(note?.updated_at).format('MM/DD/YYYY')

@@ -71,7 +71,7 @@ export const getTheme = (isDarkMode: boolean) =>
               textTransform: 'none',
               borderRadius: 6,
               fontWeight: 500,
-              color: theme.palette.text.secondary,
+              color: theme.palette.text.primary,
               backgroundColor:
                 theme.palette.mode === 'dark'
                   ? 'rgba(255, 255, 255, 0.055)'
@@ -86,12 +86,17 @@ export const getTheme = (isDarkMode: boolean) =>
           }]
       },
       MuiIconButton: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            color: theme.palette.text.primary,
+          }),
+        },
         variants: [
           {
             props: { variant: 'noteMenu' },
             style: ({ theme }) => ({
               borderRadius: 6,
-              color: theme.palette.text.secondary,
+              color: theme.palette.text.primary,
               backgroundColor:
                 theme.palette.mode === 'dark'
                   ? 'rgba(255, 255, 255, 0.055)'
@@ -115,7 +120,7 @@ export const getTheme = (isDarkMode: boolean) =>
             paddingTop: theme.spacing(0.75),
             paddingBottom: theme.spacing(0.75),
             height: 40,
-            color: theme.palette.text.secondary,
+            color: theme.palette.text.primary,
             '& .hover-actions': {
               visibility: 'hidden',
             },

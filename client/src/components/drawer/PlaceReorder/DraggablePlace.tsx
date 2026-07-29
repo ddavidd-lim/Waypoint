@@ -54,7 +54,7 @@ export function DraggablePlace({ place, included, index, onToggle, onCommit }: P
             }} />
 
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography noWrap>{place.name}</Typography>
+              <Typography>{place.name}</Typography>
               <Typography variant="caption" color="text.secondary" noWrap>
                 {place.city}, {place.state}
               </Typography>
