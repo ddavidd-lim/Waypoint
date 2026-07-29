@@ -2,16 +2,16 @@ import { createTheme, alpha } from '@mui/material/styles';
 
 export const journalColors = {
   accent: {
-    light: '#df6c08',
-    dark: '#d87621',
+    light: '#4fbd0e', // moss green — warm undertone, not cool/minty
+    dark: '#18b53a',
   },
   destructive: {
     light: '#B3402C',
     dark: '#C9583F',
   },
   pin: {
-    active: { light: '#B5651D', dark: '#D98C4A' },
-    inactive: { light: '#C7BCA8', dark: '#4A4335' },
+    active: { light: '#B5651D', dark: '#D98C4A' },   // unchanged — warm amber reads like leather/wood against green
+    inactive: { light: '#C7BCA8', dark: '#4A4335' },  // unchanged
   },
 };
 
@@ -25,9 +25,9 @@ export const getTheme = (isDarkMode: boolean) =>
       },
       text: {
         primary: isDarkMode ? '#EDE8E0' : '#2E2A25',
-        secondary: isDarkMode ? '#A39A8C' : '#8A8175',
+        // secondary: isDarkMode ? '#c6c6c6' : '#acacac',
       },
-      divider: isDarkMode ? '#3A342C' : '#E3DBCC',
+      // divider: isDarkMode ? '#3A342C' : '#E3DBCC',
       primary: {
         main: isDarkMode ? journalColors.accent.dark : journalColors.accent.light,
         contrastText: isDarkMode ? '#1C1A17' : '#FFFFFF',

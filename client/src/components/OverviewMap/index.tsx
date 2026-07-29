@@ -27,7 +27,7 @@ export function OverviewMap({ places, allPlaces, showRoute, autoPanEnabled }: Pr
       {route && showRoute && (
         <Polyline
           path={route.routes[0].overview_path}
-          strokeColor="#241ae8"
+          strokeColor="#00ae29"
           strokeWeight={5}
           strokeOpacity={0.8}
         />
