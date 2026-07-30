@@ -1,4 +1,4 @@
-import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import { LEFT_DRAWER_WIDTH, RAIL_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { styled } from '@mui/material/styles';
 
 
@@ -16,9 +16,11 @@ export const Main = styled('main', {
   }),
   marginLeft: `-${LEFT_DRAWER_WIDTH}px`,
   marginRight: `-${RIGHT_DRAWER_WIDTH}px`,
+  paddingRight: `${RAIL_WIDTH}px`,
   [theme.breakpoints.down('sm')]: {
     marginLeft: 0,
     marginRight: 0,
+    paddingRight: 0,
   },
   variants: [
     {

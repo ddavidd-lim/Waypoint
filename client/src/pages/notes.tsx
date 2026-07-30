@@ -21,12 +21,15 @@ import { Main } from '@/components/main';
 import type { SaveState } from '@/components/SaveIndicator/types';
 import { AuthContext } from '@/context/auth/authContext';
 import { showSignInSnackbar } from '@/utils/showSignInSnackbar';
-import { Box } from '@mui/material';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { Box, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { closeSnackbar } from 'notistack';
 import { useNavigate, useParams } from 'react-router-dom';
 import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
 
+const RAIL_WIDTH = 48;
 
 export default function Notes() {
   const queryClient = useQueryClient();
@@ -165,6 +168,32 @@ export default function Notes() {
         open={openRightDrawer}
         handleDrawerClose={handleRightDrawerClose}
       />
+
+      {!isMobile && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: RAIL_WIDTH,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            bgcolor: 'background.paper',
+            borderLeft: '1px solid',
+            borderColor: 'divider',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            pt: 1,
+            gap: 0.5,
+          }}
+        >
+          <IconButton variant='noteMenu' onClick={openRightDrawer ? handleRightDrawerClose : handleRightDrawerOpen}>
+            {openRightDrawer ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+          </IconButton>
+        </Box >
+      )
+      }
     </>
   );
 }
