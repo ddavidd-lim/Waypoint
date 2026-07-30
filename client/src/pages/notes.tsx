@@ -30,8 +30,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
 import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from '@mui/icons-material/Map';
+import LeftRail from '@/components/rails/LeftRail';
+import RightRail from '@/components/rails/RightRail';
 
-const RAIL_WIDTH = 48;
 
 export default function Notes() {
   const queryClient = useQueryClient();
@@ -149,31 +150,8 @@ export default function Notes() {
 
   return (
     <>
-      {!isMobile && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            width: RAIL_WIDTH,
-            zIndex: (theme) => theme.zIndex.drawer + 2,
-            bgcolor: 'background.paper',
-            borderRight: '1px solid',
-            borderColor: 'divider',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            pt: 1,
-            gap: 0.5,
-          }}
-        >
-          <IconButton variant='noteMenu' onClick={openLeftDrawer ? handleLeftDrawerClose : handleLeftDrawerOpen}>
-            {openLeftDrawer ? <KeyboardDoubleArrowLeftIcon /> : <FolderIcon />}
-          </IconButton>
-        </Box >
-      )
-      }
+      {!isMobile && <LeftRail openLeftDrawer={openLeftDrawer} handleLeftDrawerOpen={handleLeftDrawerOpen} handleLeftDrawerClose={handleLeftDrawerClose} />}
+
       <NotesDrawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
@@ -196,31 +174,7 @@ export default function Notes() {
         handleDrawerClose={handleRightDrawerClose}
       />
 
-      {!isMobile && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: RAIL_WIDTH,
-            zIndex: (theme) => theme.zIndex.drawer + 2,
-            bgcolor: 'background.paper',
-            borderLeft: '1px solid',
-            borderColor: 'divider',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            pt: 1,
-            gap: 0.5,
-          }}
-        >
-          <IconButton variant='noteMenu' onClick={openRightDrawer ? handleRightDrawerClose : handleRightDrawerOpen}>
-            {openRightDrawer ? <KeyboardDoubleArrowRightIcon /> : <MapIcon />}
-          </IconButton>
-        </Box >
-      )
-      }
+      {!isMobile && <RightRail openRightDrawer={openRightDrawer} handleRightDrawerOpen={handleRightDrawerOpen} handleRightDrawerClose={handleRightDrawerClose} />}
     </>
   );
 }

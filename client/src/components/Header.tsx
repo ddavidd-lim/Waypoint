@@ -1,10 +1,10 @@
 import { useDarkMode } from '@/context/theme-toggle/dark-mode-context';
 import type { Note } from '@/types/db';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import FolderIcon from '@mui/icons-material/Folder';
 import IosShareIcon from '@mui/icons-material/IosShare';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import MapIcon from '@mui/icons-material/Map';
 import { Box, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import dayjs from 'dayjs';
@@ -60,7 +60,7 @@ export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, op
             transitionDelay: openLeftDrawer ? '0ms' : '225ms',
           }}
         >
-          <KeyboardDoubleArrowRightIcon />
+          <FolderIcon />
         </IconButton>
       )}
 
@@ -96,7 +96,7 @@ export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, op
                 transitionDelay: openRightDrawer ? '0ms' : '225ms',
               }}
             >
-              <KeyboardDoubleArrowLeftIcon />
+              <MapIcon />
             </IconButton>
           </Tooltip>
         )}
