@@ -124,6 +124,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
       open={open}
+      fullScreen={isMobile}
       onClose={handleDrawerClose}
       elevation={0}
       sx={{
