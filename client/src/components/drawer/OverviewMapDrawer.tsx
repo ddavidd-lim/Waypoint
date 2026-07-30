@@ -44,7 +44,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Pro
 
   const { orderedPlaces, activeOrderedPlaces, excluded, setOrder, toggle } = useDraggablePlaces(pois);
 
-  const [showRoute, setShowRoute] = useState(true);
+  const [showRoute, setShowRoute] = useState(false);
 
   const [autoPanEnabled, setAutoPanEnabled] = useState(true);
 

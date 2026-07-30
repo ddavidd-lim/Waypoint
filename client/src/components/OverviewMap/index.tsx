@@ -8,11 +8,11 @@ import { PlaceMarkers } from './PlaceMarkers';
 type Props = {
   places: Place[],
   allPlaces: Place[];
-  showRoute: boolean
-  autoPanEnabled: boolean
+  showRoute: boolean;
+  autoPanEnabled: boolean;
 };
 export function OverviewMap({ places, allPlaces, showRoute, autoPanEnabled }: Props) {
-  const { route } = useRoute(places);
+  const { route } = useRoute(places, showRoute);
 
   return (
     <Map
@@ -33,5 +33,5 @@ export function OverviewMap({ places, allPlaces, showRoute, autoPanEnabled }: Pr
         />
       )}
     </Map>
-  )
+  );
 }
