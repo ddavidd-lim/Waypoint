@@ -18,20 +18,16 @@ import {
 
 import Header from '@/components/Header';
 import { Main } from '@/components/main';
+import LeftRail from '@/components/rails/LeftRail';
+import RightRail from '@/components/rails/RightRail';
 import type { SaveState } from '@/components/SaveIndicator/types';
 import { AuthContext } from '@/context/auth/authContext';
 import { showSignInSnackbar } from '@/utils/showSignInSnackbar';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { Box, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { closeSnackbar } from 'notistack';
 import { useNavigate, useParams } from 'react-router-dom';
 import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
-import FolderIcon from '@mui/icons-material/Folder';
-import MapIcon from '@mui/icons-material/Map';
-import LeftRail from '@/components/rails/LeftRail';
-import RightRail from '@/components/rails/RightRail';
 
 
 export default function Notes() {
