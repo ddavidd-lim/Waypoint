@@ -28,6 +28,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { closeSnackbar } from 'notistack';
 import { useNavigate, useParams } from 'react-router-dom';
 import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
+import FolderIcon from '@mui/icons-material/Folder';
+import MapIcon from '@mui/icons-material/Map';
 
 const RAIL_WIDTH = 48;
 
@@ -167,7 +169,7 @@ export default function Notes() {
           }}
         >
           <IconButton variant='noteMenu' onClick={openLeftDrawer ? handleLeftDrawerClose : handleLeftDrawerOpen}>
-            {openLeftDrawer ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+            {openLeftDrawer ? <KeyboardDoubleArrowLeftIcon /> : <FolderIcon />}
           </IconButton>
         </Box >
       )
@@ -214,7 +216,7 @@ export default function Notes() {
           }}
         >
           <IconButton variant='noteMenu' onClick={openRightDrawer ? handleRightDrawerClose : handleRightDrawerOpen}>
-            {openRightDrawer ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+            {openRightDrawer ? <KeyboardDoubleArrowRightIcon /> : <MapIcon />}
           </IconButton>
         </Box >
       )
