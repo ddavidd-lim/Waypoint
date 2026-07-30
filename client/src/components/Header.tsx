@@ -1,12 +1,11 @@
-// components/MobileTopBar.tsx
 import { useDarkMode } from '@/context/theme-toggle/dark-mode-context';
 import type { Note } from '@/types/db';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import FolderIcon from '@mui/icons-material/Folder';
 import IosShareIcon from '@mui/icons-material/IosShare';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { Box, Stack, Tooltip, Typography } from '@mui/material';
+import MapIcon from '@mui/icons-material/Map';
+import { Box, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
@@ -24,6 +23,8 @@ type Props = {
 
 export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, openLeftDrawer, openRightDrawer, selectedNote, saveState }: Props) {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleShare = () => {
     // TODO: is_shared + /shared/:id
@@ -47,19 +48,21 @@ export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, op
       }}
     >
       {/* Left Drawer button*/}
-      <IconButton
-        variant="noteMenu"
-        color="inherit"
-        onClick={handleLeftDrawerOpen}
-        sx={{
-          opacity: openLeftDrawer ? 0 : 1,
-          pointerEvents: openLeftDrawer ? 'none' : 'auto',
-          transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
-          transitionDelay: openLeftDrawer ? '0ms' : '225ms',
-        }}
-      >
-        <KeyboardDoubleArrowRightIcon />
-      </IconButton>
+      {isMobile && (
+        <IconButton
+          variant="noteMenu"
+          color="inherit"
+          onClick={handleLeftDrawerOpen}
+          sx={{
+            opacity: openLeftDrawer ? 0 : 1,
+            pointerEvents: openLeftDrawer ? 'none' : 'auto',
+            transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
+            transitionDelay: openLeftDrawer ? '0ms' : '225ms',
+          }}
+        >
+          <FolderIcon />
+        </IconButton>
+      )}
 
       {/* Current note title */}
       <Typography
@@ -81,20 +84,22 @@ export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, op
             {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
         </Tooltip>
-        <Tooltip title="Show map">
-          <IconButton
-            variant="noteMenu"
-            onClick={handleRightDrawerOpen}
-            sx={{
-              opacity: openRightDrawer ? 0 : 1,
-              pointerEvents: openRightDrawer ? 'none' : 'auto',
-              transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
-              transitionDelay: openRightDrawer ? '0ms' : '225ms',
-            }}
-          >
-            <KeyboardDoubleArrowLeftIcon />
-          </IconButton>
-        </Tooltip>
+        {isMobile && (
+          <Tooltip title="Show map">
+            <IconButton
+              variant="noteMenu"
+              onClick={handleRightDrawerOpen}
+              sx={{
+                opacity: openRightDrawer ? 0 : 1,
+                pointerEvents: openRightDrawer ? 'none' : 'auto',
+                transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
+                transitionDelay: openRightDrawer ? '0ms' : '225ms',
+              }}
+            >
+              <MapIcon />
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
     </Box>
   );

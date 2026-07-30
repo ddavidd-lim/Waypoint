@@ -1,4 +1,4 @@
-import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import { RAIL_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useDraggablePlaces } from '@/hooks/useDraggablePlaces';
 import { usePlaces } from '@/hooks/usePlace';
 import type { Place } from '@/types/places';
@@ -18,17 +18,21 @@ import { OverviewMap } from '../OverviewMap';
 import { PlaceReorder } from './PlaceReorder';
 
 
+type DrawerProps = { fullScreen?: boolean; };
+
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'fullScreen',
-})<{ fullScreen?: boolean }>(({ fullScreen }) => ({
-  width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
-  flexShrink: 0,
-  boxSizing: 'border-box',
-  [`& .${drawerClasses.paper}`]: {
+})<DrawerProps>
+  (({ fullScreen }) => ({
     width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
+    flexShrink: 0,
     boxSizing: 'border-box',
-  },
-}));
+    [`& .${drawerClasses.paper}`]: {
+      width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
+      boxSizing: 'border-box',
+      right: fullScreen ? 0 : RAIL_WIDTH,
+    },
+  }));
 
 const EMPTY: Place[] = [];
 
@@ -36,7 +40,7 @@ type Props = {
   handleDrawerClose: () => void;
   open: boolean;
   pins: LocationPin[];
-}
+};
 export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Props) {
   const theme = useTheme();
 
@@ -74,9 +78,11 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, pins }: Pro
           justifyContent: 'start'
         }}
       >
-        <IconButton variant='noteMenu' onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
-        </IconButton>
+        {isMobile && (
+          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
+          </IconButton>
+        )}
         <Box sx={{ width: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
             Overview Map

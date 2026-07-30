@@ -18,7 +18,7 @@ type Props = {
   handleSelectCurrentNoteId: (noteId: string) => void;
   currentNoteId: string;
   onMenuOpen: (e: React.MouseEvent<HTMLElement>, noteId: string) => void;
-}
+};
 
 export default memo(
   function MenuContent({
@@ -46,8 +46,10 @@ export default memo(
                     '& .hover-actions': {
                       visibility: 'hidden',
                     },
-                    '&:hover .hover-actions': {
-                      visibility: 'visible',
+                    '@media (hover: hover)': {
+                      '&:hover .hover-actions': {
+                        visibility: 'visible',
+                      },
                     },
                     '&.selected': {
                       backgroundColor: alpha(theme.palette.action.selected, 0.15),
@@ -92,4 +94,4 @@ export default memo(
 
       </Stack>
     );
-  })
+  });

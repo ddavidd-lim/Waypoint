@@ -1,4 +1,4 @@
-import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
+import { LEFT_DRAWER_WIDTH, RAIL_WIDTH } from "@/constants.ts/drawerWidth";
 import { useUser } from "@/hooks/useUser";
 import { createNote } from "@/repositories/notes";
 import { supabase } from "@/services/supabase";
@@ -26,15 +26,21 @@ import NoteEllipsisMenu from "./NoteEllipsisMenu";
 import ProfileMenu from "./ProfileMenu";
 import Logo from '/waypoint_logo_3d.png';
 
-const Drawer = styled(MuiDrawer)({
-  width: LEFT_DRAWER_WIDTH,
-  flexShrink: 0,
-  boxSizing: 'border-box',
-  [`& .${drawerClasses.paper}`]: {
+type DrawerProps = { fullScreen?: boolean; };
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'fullScreen',
+})<DrawerProps>
+  (({ fullScreen }) => ({
     width: LEFT_DRAWER_WIDTH,
+    flexShrink: 0,
     boxSizing: 'border-box',
-  },
-});
+    [`& .${drawerClasses.paper}`]: {
+      width: LEFT_DRAWER_WIDTH,
+      boxSizing: 'border-box',
+      left: fullScreen ? 0 : RAIL_WIDTH,
+    },
+  }));
 
 
 type Props = {
@@ -42,7 +48,7 @@ type Props = {
   currentNoteId: string;
   handleDrawerClose: () => void;
   open: boolean;
-}
+};
 
 export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
   const theme = useTheme();
@@ -56,7 +62,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
 
   const queryClient = useQueryClient();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: ['notes'],
@@ -79,7 +85,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     },
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
-      navigate(`/notes/${data.id}`)
+      navigate(`/notes/${data.id}`);
     },
     onError: () => {
       enqueueSnackbar('Guest users can only create 3 notes. Please sign up to create more.', { variant: 'error' });
@@ -96,7 +102,7 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     e.stopPropagation();
 
     setProfileMenuAnchor(e.currentTarget);
-  }, [])
+  }, []);
 
   const handleNoteMenuClose = () => {
     setNoteMenuAnchor(null);
@@ -111,13 +117,14 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
     handleProfileMenuClose();
 
     navigate('/login');
-  }
+  };
 
 
   return (
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
       open={open}
+      fullScreen={isMobile}
       onClose={handleDrawerClose}
       elevation={0}
       sx={{
@@ -165,9 +172,11 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
             New note
           </Button>
 
-          <IconButton variant='noteMenu' onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
-          </IconButton>
+          {isMobile && (
+            <IconButton variant='noteMenu' onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+            </IconButton>
+          )}
         </Stack>
       </Stack>
 

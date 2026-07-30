@@ -18,6 +18,8 @@ import {
 
 import Header from '@/components/Header';
 import { Main } from '@/components/main';
+import LeftRail from '@/components/rails/LeftRail';
+import RightRail from '@/components/rails/RightRail';
 import type { SaveState } from '@/components/SaveIndicator/types';
 import { AuthContext } from '@/context/auth/authContext';
 import { showSignInSnackbar } from '@/utils/showSignInSnackbar';
@@ -144,6 +146,8 @@ export default function Notes() {
 
   return (
     <>
+      {!isMobile && <LeftRail openLeftDrawer={openLeftDrawer} handleLeftDrawerOpen={handleLeftDrawerOpen} handleLeftDrawerClose={handleLeftDrawerClose} />}
+
       <NotesDrawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
@@ -165,6 +169,8 @@ export default function Notes() {
         open={openRightDrawer}
         handleDrawerClose={handleRightDrawerClose}
       />
+
+      {!isMobile && <RightRail openRightDrawer={openRightDrawer} handleRightDrawerOpen={handleRightDrawerOpen} handleRightDrawerClose={handleRightDrawerClose} />}
     </>
   );
 }
