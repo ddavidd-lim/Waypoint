@@ -18,18 +18,21 @@ import { OverviewMap } from '../OverviewMap';
 import { PlaceReorder } from './PlaceReorder';
 
 
+type DrawerProps = { fullScreen?: boolean; };
+
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'fullScreen',
-})<{ fullScreen?: boolean; }>(({ fullScreen }) => ({
-  width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
-  flexShrink: 0,
-  boxSizing: 'border-box',
-  [`& .${drawerClasses.paper}`]: {
+})<DrawerProps>
+  (({ fullScreen }) => ({
     width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
+    flexShrink: 0,
     boxSizing: 'border-box',
-    right: fullScreen ? 0 : RAIL_WIDTH,
-  },
-}));
+    [`& .${drawerClasses.paper}`]: {
+      width: fullScreen ? '100%' : RIGHT_DRAWER_WIDTH,
+      boxSizing: 'border-box',
+      right: fullScreen ? 0 : RAIL_WIDTH,
+    },
+  }));
 
 const EMPTY: Place[] = [];
 

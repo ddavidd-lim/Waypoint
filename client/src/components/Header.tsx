@@ -48,19 +48,21 @@ export default function Header({ handleLeftDrawerOpen, handleRightDrawerOpen, op
       }}
     >
       {/* Left Drawer button*/}
-      <IconButton
-        variant="noteMenu"
-        color="inherit"
-        onClick={handleLeftDrawerOpen}
-        sx={{
-          opacity: openLeftDrawer ? 0 : 1,
-          pointerEvents: openLeftDrawer ? 'none' : 'auto',
-          transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
-          transitionDelay: openLeftDrawer ? '0ms' : '225ms',
-        }}
-      >
-        <KeyboardDoubleArrowRightIcon />
-      </IconButton>
+      {isMobile && (
+        <IconButton
+          variant="noteMenu"
+          color="inherit"
+          onClick={handleLeftDrawerOpen}
+          sx={{
+            opacity: openLeftDrawer ? 0 : 1,
+            pointerEvents: openLeftDrawer ? 'none' : 'auto',
+            transition: 'opacity 225ms cubic-bezier(0.0, 0, 0.2, 1)',
+            transitionDelay: openLeftDrawer ? '0ms' : '225ms',
+          }}
+        >
+          <KeyboardDoubleArrowRightIcon />
+        </IconButton>
+      )}
 
       {/* Current note title */}
       <Typography

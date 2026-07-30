@@ -147,6 +147,31 @@ export default function Notes() {
 
   return (
     <>
+      {!isMobile && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: RAIL_WIDTH,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            bgcolor: 'background.paper',
+            borderRight: '1px solid',
+            borderColor: 'divider',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            pt: 1,
+            gap: 0.5,
+          }}
+        >
+          <IconButton variant='noteMenu' onClick={openLeftDrawer ? handleLeftDrawerClose : handleLeftDrawerOpen}>
+            {openLeftDrawer ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+          </IconButton>
+        </Box >
+      )
+      }
       <NotesDrawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}

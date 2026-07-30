@@ -17,10 +17,12 @@ export const Main = styled('main', {
   marginLeft: `-${LEFT_DRAWER_WIDTH}px`,
   marginRight: `-${RIGHT_DRAWER_WIDTH}px`,
   paddingRight: `${RAIL_WIDTH}px`,
+  paddingLeft: `${RAIL_WIDTH}px`,
   [theme.breakpoints.down('sm')]: {
     marginLeft: 0,
     marginRight: 0,
     paddingRight: 0,
+    paddingLeft: 0,
   },
   variants: [
     {
